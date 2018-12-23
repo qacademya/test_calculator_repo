@@ -1,0 +1,30 @@
+{
+  "name": "calculator",
+  "version": "1.0.0",
+  "description": "Calculator",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EdMSL/calculator.git"
+  },
+  "scripts": {
+    "test": "npm test",
+    "build": "gulp build"
+  },
+  "author": "Eduard Trayt",
+	"license": "ISC",
+	"browserslist": [
+		"last 2 versions",
+		"IE 11"
+	],
+  "devDependencies": {
+    "autoprefixer": "^9.4.3",
+    "cssnano": "^4.1.8",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.0.2",
+    "node-sass": "^4.11.0"
+  }
+}
