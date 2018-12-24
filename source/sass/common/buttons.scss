@@ -1,0 +1,33 @@
+.buttons {
+	display: flex;
+	// justify-content: space-between; 
+	// flex-wrap: wrap;
+	width: 100%;
+}
+
+.buttons__numbers {
+	display: flex;
+	flex-wrap: wrap;
+	// justify-content: space-between;
+	width: 95%;
+}
+
+.buttons__signs {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	width: 95%;
+}
+
+.button {
+	width: 50px;
+	height: 50px;
+}
+
+.buttons__numbers .button {
+	margin-right: 10px;
+}
+
+.buttons__numbers .button:nth-child(3n) {
+	margin-right: 0;
+} 

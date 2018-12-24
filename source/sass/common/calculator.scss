@@ -1,0 +1,47 @@
+.calculator__container {
+	margin: 0;
+	padding: 0 10px;
+
+	border: 1px solid $main_color;
+	border-radius: 10px;
+}
+
+.calculator__top {
+	padding: 5px 0 15px;
+}
+
+.calculator__name {
+	margin: 0;
+	margin-right: 15px;
+	margin-bottom: 10px;
+
+	text-align: right;
+}
+
+.calculator__screen {
+	display: flex;
+	flex-direction: column;
+
+	background-color: #ffffff;
+	border: 2px solid #000;
+}
+
+.calculator__input{
+	padding-right: 5px;
+
+	text-align: right;
+
+	background-color: #ffffff;
+	border: none;
+
+	&:focus {
+		border: none;
+		outline: none;
+		box-shadow: none;
+	}
+
+	&--operation {
+		font-size: 35px;
+		line-height: 45px;
+	}
+} 
