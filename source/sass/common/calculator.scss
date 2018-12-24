@@ -1,6 +1,8 @@
 .calculator__container {
-	margin: 0;
+	width: 300px;
+	margin: 0 auto;
 	padding: 0 10px;
+	box-sizing: border-box;
 
 	border: 1px solid $main_color;
 	border-radius: 10px;
