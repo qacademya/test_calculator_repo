@@ -18,30 +18,35 @@
 					<div class="calculator__top">
 						<p class="calculator__name">Calculator</p>
 						<div class="calculator__screen">
-							<input class="calculator__input calculator__input--operation" value="0" type="text" name="operation" id="screen_operation" readonly>
-							<input class="calculator__input calculator__input--result" value="" type="text" name="result" id="screen_result" readonly>
+							<input class="calculator__input calculator__input--calculation" value="0" type="text" name="calculation" id="screen_calculation" readonly>
+							<input class="calculator__input calculator__input--number" value="0" type="text" name="number" id="screen_number" readonly>
+							<input class="calculator__input calculator__input--result" value="0" type="text" name="result" id="screen_result" readonly>
 						</div>
 					</div>
 					<div class="calculator__buttons buttons">
-						<div class="buttons__numbers">
-							<button class="button">1</button>
-							<button class="button">2</button>
-							<button class="button">3</button>
-							<button class="button">4</button>
-							<button class="button">5</button>
-							<button class="button">6</button>
-							<button class="button">7</button>
-							<button class="button">8</button>
-							<button class="button">9</button>
-							<button class="button">0</button>
-							<button class="button">.</button>
-							<button class="button">=</button>
+						<div class="buttons__block buttons__block--service">
+							<button class="button" data-type="clear">C</button>
+							<button class="button" data-type="delete"><</button>
 						</div>
-						<div class="buttons__signs">
-							<button class="button">/</button>
-							<button class="button">*</button>
-							<button class="button">+</button>
-							<button class="button">-</button>
+						<div class="buttons__block buttons__block--numbers">
+							<button class="button" data-type="1">1</button>
+							<button class="button" data-type="2">2</button>
+							<button class="button" data-type="3">3</button>
+							<button class="button" data-type="4">4</button>
+							<button class="button" data-type="5">5</button>
+							<button class="button" data-type="6">6</button>
+							<button class="button" data-type="7">7</button>
+							<button class="button" data-type="8">8</button>
+							<button class="button" data-type="9">9</button>
+							<button class="button" data-type="0">0</button>
+							<button class="button" data-type="float">.</button>
+							<button class="button" data-type="result">=</button>
+						</div>
+						<div class="buttons__block buttons__block--signs">
+							<button class="button" data-type="segmentation">/</button>
+							<button class="button" data-type="multiplication">*</button>
+							<button class="button" data-type="summation">+</button>
+							<button class="button" data-type="subtraction">-</button>
 						</div>
 					</div>
 					<div class="calculator__bottom">

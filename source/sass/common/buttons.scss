@@ -1,32 +1,39 @@
 .buttons {
 	display: flex;
-	justify-content: space-between;
-	width: 100%;
+	justify-content: flex-start;
+	flex-wrap: wrap;
 }
 
-.buttons__numbers {
+.buttons__block {
 	display: flex;
 	flex-wrap: wrap;
-	width: 70%;
-	box-sizing: border-box;
-}
 
-.buttons__signs {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: flex-end;
-	width: 20%;
+	&--service {
+		justify-content: flex-end;
+		width: 280px;
+	}
+
+	&--numbers {
+		width: 170px;
+		box-sizing: border-box;
+
+		& .button {
+			margin-right: 10px;
+		}
+
+		& .button:nth-child(3n) {
+			margin-right: 0;
+		}
+	}
+
+	&--signs {
+		justify-content: flex-end;
+		width: 50px;
+		margin-left: auto;
+	}
 }
 
 .button {
 	width: 50px;
 	height: 50px;
 }
-
-.buttons__numbers .button {
-	margin-right: 10px;
-}
-
-.buttons__numbers .button:nth-child(3n) {
-	margin-right: 0;
-} 
