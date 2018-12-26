@@ -13,14 +13,21 @@
     SUMMATION_SIGN: ' + ',
     SUBTRACTION_SIGN: ' - '
   }
-  var isNewOperation;
-  var btnValue;
-  var lastNumber;
+  var isFloat = false;
+  var isNewOperation = true;
+  var pressedButtonValue;
+  var currentNumber = '';
+  var currentCalculationStr = '';
+  // var lastResult;
   var operations = {
     arithmetic: function (arithmeticOperation) {
+      if (currentNumber[currentNumber.length - 1] === '.') {
+        currentNumber = currentNumber.slice(0, -1);
+      }
       var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
-      lastNumber = numberField.value;
-      calculationField.value += lastNumber + ArithmeticSigns[currentArithmeticSign];
+      currentCalculationStr = currentNumber + ArithmeticSigns[currentArithmeticSign];
+      calculationField.value += currentCalculationStr;
+      isFloat = false;
       isNewOperation = true;
     },
     segmentation: function (operation) {
@@ -36,15 +43,33 @@
       operations.arithmetic(operation)
     },
     clear: function () {
+      currentCalculationStr = '';
       numberField.value = 0;
       clearDisplay(calculationField);
       clearDisplay(lastResultField);
+      isFloat = false;
       isNewOperation = true;
     },
     delete: function () {
-      lastNumber.slice();
+      var changedNumber = currentNumber.slice(0, -1);
+
+      if (changedNumber.length <= 0) {
+        changedNumber = 0;
+        isNewOperation = true;
+      }
+      currentNumber = '';
+      changeNumberFieldValue(changedNumber);
     },
-    float: operationSegmentation,
+    float: function () {
+      if (!isFloat) {
+        var changedNumber = currentNumber + '.';
+        currentNumber = '';
+        changeNumberFieldValue(changedNumber)
+        isFloat = true;
+      } else {
+        return;
+      }
+    },
     result: operationSegmentation,
   }
 
@@ -59,7 +84,8 @@
   }
 
 	function changeNumberFieldValue(newValue) {
-		numberField.value += newValue;
+    currentNumber += newValue;
+    numberField.value = currentNumber;
   }
 
   function changeCurrentCalculation(buttonValue) {
@@ -77,14 +103,15 @@
       return;
     }
 
-    btnValue = target.dataset.type;
+    pressedButtonValue = target.dataset.type;
 
     if (isNewOperation) {
       clearDisplay(numberField);
+      currentNumber = '';
       isNewOperation = false;
     }
 
-    changeCurrentCalculation(btnValue);
+    changeCurrentCalculation(pressedButtonValue);
   }
 
   operations.clear();
