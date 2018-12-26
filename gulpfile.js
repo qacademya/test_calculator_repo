@@ -31,15 +31,23 @@ gulp.task('sass', function () {
 gulp.task('js', function (cb) {
   pump([
         gulp.src('source/js/*.js'),
-        uglify(),
-        rename(function (path) {
-          path.basename += '.min';
-        }),
         gulp.dest('build/js')
     ],
     cb
   );
 });
+// gulp.task('js', function (cb) {
+//   pump([
+//         gulp.src('source/js/*.js'),
+//         uglify(),
+//         rename(function (path) {
+//           path.basename += '.min';
+//         }),
+//         gulp.dest('build/js')
+//     ],
+//     cb
+//   );
+// });
 
 gulp.task('clean', function () {
   return del('build');

@@ -6,19 +6,55 @@
 	var calculationField = calculator.querySelector('#screen_calculation');
 	var numberField = calculator.querySelector('#screen_number');
   var lastResultField = calculator.querySelector('#screen_result');
-  var mathOperations = ['segmentation', 'multiplication', 'summation', 'subtraction'];
-  var specialOperations = ['clear', 'delete', 'float', 'result'];
+  // var specialOperations = ['segmentation', 'multiplication', 'summation', 'subtraction', 'clear', 'delete', 'float', 'result'];
+  var ArithmeticSigns = {
+    SEGMENTATION_SIGN: ' / ',
+    MULTIPLICATION_SIGN: ' * ',
+    SUMMATION_SIGN: ' + ',
+    SUBTRACTION_SIGN: ' - '
+  }
   var isNewOperation;
   var btnValue;
-
-  function operationReset() {
-    numberField.value = 0;
-    calculationField.value ='';
-    lastResultField.value ='';
-    isNewOperation = true;
+  var lastNumber;
+  var operations = {
+    arithmetic: function (arithmeticOperation) {
+      var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
+      lastNumber = numberField.value;
+      calculationField.value += lastNumber + ArithmeticSigns[currentArithmeticSign];
+      isNewOperation = true;
+    },
+    segmentation: function (operation) {
+      operations.arithmetic(operation)
+    },
+    multiplication: function (operation) {
+      operations.arithmetic(operation)
+    },
+    summation: function (operation) {
+      operations.arithmetic(operation)
+    },
+    subtraction: function (operation) {
+      operations.arithmetic(operation)
+    },
+    clear: function () {
+      numberField.value = 0;
+      clearDisplay(calculationField);
+      clearDisplay(lastResultField);
+      isNewOperation = true;
+    },
+    delete: function () {
+      lastNumber.slice();
+    },
+    float: operationSegmentation,
+    result: operationSegmentation,
   }
 
-  function clearDisplayValue(input) {
+  function operationSegmentation() {
+    // lastNumber = numberField.value;
+    // calculationField.value += lastNumber + ' / ';
+    // isNewOperation = true;
+  }
+
+  function clearDisplay(input) {
     input.value = '';
   }
 
@@ -26,7 +62,15 @@
 		numberField.value += newValue;
   }
 
+  function changeCurrentCalculation(buttonValue) {
+    if (isNaN(+buttonValue)) {
+      return operations[buttonValue](buttonValue);
+    }
+    return changeNumberFieldValue(+buttonValue);
+  }
+
   function onButtonClick(evt) {
+    evt.preventDefault();
     var target = evt.target;
 
     if (target.tagName !== 'BUTTON') {
@@ -36,13 +80,13 @@
     btnValue = target.dataset.type;
 
     if (isNewOperation) {
-      clearDisplayValue(numberField);
+      clearDisplay(numberField);
       isNewOperation = false;
     }
 
-    changeNumberFieldValue(btnValue);
+    changeCurrentCalculation(btnValue);
   }
 
-  operationReset();
+  operations.clear();
   buttons.addEventListener('click', onButtonClick);
 })();
