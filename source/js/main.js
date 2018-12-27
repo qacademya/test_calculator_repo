@@ -23,24 +23,27 @@
   // var lastResult;
   var operations = {
     arithmetic: function (arithmeticOperation) {
-      if (!isLastOperationArithmetic) {
-        var currentNumberLastSimbol = currentNumber[currentNumber.length - 1];
-        var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
-
-        if (currentNumberLastSimbol === '.') {
-          currentNumber = currentNumber.slice(0, -1);
+      var currentNumberLastSimbol = currentNumber[currentNumber.length - 1];
+      var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
+      if (!isNewOperation) {
+        if (!isLastOperationArithmetic) {
+          if (currentNumberLastSimbol === '.') {
+            currentNumber = currentNumber.slice(0, -1);
+          }
+          lastNumber = currentNumber;
+          currentCalculationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
+          calculationField.value = currentCalculationStr;
+          isFloat = false;
+          isNewOperation = true;
+          isLastOperationArithmetic = true;
+        } else {
+          currentNumber = '';
+          changeCurrentNumberAndNumberFieldValue(lastNumber);
+          isNewOperation = true;
         }
-        lastNumber = currentNumber;
-        currentCalculationStr = currentNumber + ArithmeticSigns[currentArithmeticSign];
-        calculationField.value += currentCalculationStr;
-        isFloat = false;
-        isNewOperation = true;
-        isLastOperationArithmetic = true;
       } else {
-        currentNumber = '';
-        changeCurrentNumberAndNumberFieldValue(lastNumber);
-        isNewOperation = true;
-        return;
+        currentCalculationStr = currentCalculationStr.slice(0, -3) + ArithmeticSigns[currentArithmeticSign];
+        calculationField.value = currentCalculationStr;
       }
     },
     segmentation: function (operation) {
@@ -67,16 +70,21 @@
       isLastOperationArithmetic = true;
     },
     delete: function () {
-      var changedNumber = lastNumber = currentNumber.slice(0, -1);
+      if (!isNewOperation) {
+        var changedNumber = lastNumber = currentNumber.slice(0, -1);
+        if (changedNumber.length === 0) {
+          changedNumber = lastNumber = 0;
+          isNewOperation = true;
+          isLastOperationArithmetic = true;
+        }
 
-      if (changedNumber.length <= 0) {
-        changedNumber = lastNumber = 0;
-        isNewOperation = true;
-        isLastOperationArithmetic = true;
+        currentNumber = '';
+        changeCurrentNumberAndNumberFieldValue(changedNumber);
+
       }
-
-      currentNumber = '';
-      changeCurrentNumberAndNumberFieldValue(changedNumber);
+      else {
+        return;
+      }
     },
     float: function () {
       if (!isFloat) {
@@ -92,9 +100,6 @@
   }
 
   function operationSegmentation() {
-    // lastNumber = numberField.value;
-    // calculationField.value += lastNumber + ' / ';
-    // isNewOperation = true;
   }
 
   function clearDisplay(input) {
@@ -113,14 +118,14 @@
 
   function changeCurrentCalculation(buttonValue) {
     if (isNaN(+buttonValue)) {
-      return operations[buttonValue](buttonValue);
-    } else if (+buttonValue === 0) {
-      if (isNewOperation) {
+      operations[buttonValue](buttonValue);
+    } else {
+      if (+buttonValue === 0 && isNewOperation) {
         return;
       }
+      isLastOperationArithmetic = false;
+      changeCurrentNumberAndNumberFieldValue(buttonValue);
     }
-    isLastOperationArithmetic = false;
-    return changeCurrentNumberAndNumberFieldValue(buttonValue);
   }
 
   function onButtonClick(evt) {
