@@ -15,20 +15,33 @@
   }
   var isFloat = false;
   var isNewOperation = true;
+  var isLastOperationArithmetic = true;
   var pressedButtonValue;
-  var currentNumber = '';
+  var currentNumber = numberField.value;
   var currentCalculationStr = '';
+  var lastNumber = '';
   // var lastResult;
   var operations = {
     arithmetic: function (arithmeticOperation) {
-      if (currentNumber[currentNumber.length - 1] === '.') {
-        currentNumber = currentNumber.slice(0, -1);
+      if (!isLastOperationArithmetic) {
+        var currentNumberLastSimbol = currentNumber[currentNumber.length - 1];
+        var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
+
+        if (currentNumberLastSimbol === '.') {
+          currentNumber = currentNumber.slice(0, -1);
+        }
+        lastNumber = currentNumber;
+        currentCalculationStr = currentNumber + ArithmeticSigns[currentArithmeticSign];
+        calculationField.value += currentCalculationStr;
+        isFloat = false;
+        isNewOperation = true;
+        isLastOperationArithmetic = true;
+      } else {
+        currentNumber = '';
+        changeCurrentNumberAndNumberFieldValue(lastNumber);
+        isNewOperation = true;
+        return;
       }
-      var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
-      currentCalculationStr = currentNumber + ArithmeticSigns[currentArithmeticSign];
-      calculationField.value += currentCalculationStr;
-      isFloat = false;
-      isNewOperation = true;
     },
     segmentation: function (operation) {
       operations.arithmetic(operation)
@@ -43,28 +56,33 @@
       operations.arithmetic(operation)
     },
     clear: function () {
+      currentNumber = '0';
       currentCalculationStr = '';
+      lastNumber = '';
       numberField.value = 0;
       clearDisplay(calculationField);
       clearDisplay(lastResultField);
       isFloat = false;
       isNewOperation = true;
+      isLastOperationArithmetic = true;
     },
     delete: function () {
-      var changedNumber = currentNumber.slice(0, -1);
+      var changedNumber = lastNumber = currentNumber.slice(0, -1);
 
       if (changedNumber.length <= 0) {
-        changedNumber = 0;
+        changedNumber = lastNumber = 0;
         isNewOperation = true;
+        isLastOperationArithmetic = true;
       }
+
       currentNumber = '';
-      changeNumberFieldValue(changedNumber);
+      changeCurrentNumberAndNumberFieldValue(changedNumber);
     },
     float: function () {
       if (!isFloat) {
         var changedNumber = currentNumber + '.';
         currentNumber = '';
-        changeNumberFieldValue(changedNumber)
+        changeCurrentNumberAndNumberFieldValue(changedNumber);
         isFloat = true;
       } else {
         return;
@@ -83,7 +101,12 @@
     input.value = '';
   }
 
-	function changeNumberFieldValue(newValue) {
+	function changeCurrentNumberAndNumberFieldValue(newValue) {
+    if (isNewOperation) {
+      clearDisplay(numberField);
+      currentNumber = '';
+      isNewOperation = false;
+    }
     currentNumber += newValue;
     numberField.value = currentNumber;
   }
@@ -91,11 +114,17 @@
   function changeCurrentCalculation(buttonValue) {
     if (isNaN(+buttonValue)) {
       return operations[buttonValue](buttonValue);
+    } else if (+buttonValue === 0) {
+      if (isNewOperation) {
+        return;
+      }
     }
-    return changeNumberFieldValue(+buttonValue);
+    isLastOperationArithmetic = false;
+    return changeCurrentNumberAndNumberFieldValue(buttonValue);
   }
 
   function onButtonClick(evt) {
+    console.log(isNewOperation)
     evt.preventDefault();
     var target = evt.target;
 
@@ -105,15 +134,10 @@
 
     pressedButtonValue = target.dataset.type;
 
-    if (isNewOperation) {
-      clearDisplay(numberField);
-      currentNumber = '';
-      isNewOperation = false;
-    }
-
     changeCurrentCalculation(pressedButtonValue);
   }
 
-  operations.clear();
+  clearDisplay(calculationField);
+  clearDisplay(lastResultField);
   buttons.addEventListener('click', onButtonClick);
 })();
