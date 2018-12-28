@@ -17,13 +17,13 @@
   var isFloat = false;
   var isNewOperation = true;
   var isLastOperationArithmetic = false;
-  // var isFirstOperation = true;
+  var isZeroAvailable = false;
+  var isTotalDeleted;
 
   var pressedButtonValue;
   var currentNumber = numberField.value;
   var currentCalculationStr = '';
   var lastNumber = '';
-  var deleteChangedNumber = '';
   // var lastResult;
   var operations = {
     arithmetic: function (arithmeticOperation) {
@@ -40,18 +40,10 @@
         changeLastArithmeticOperationSign(currentArithmeticSign);
       }
     },
-    segmentation: function (operation) {
-      operations.arithmetic(operation)
-    },
-    multiplication: function (operation) {
-      operations.arithmetic(operation)
-    },
-    summation: function (operation) {
-      operations.arithmetic(operation)
-    },
-    subtraction: function (operation) {
-      operations.arithmetic(operation)
-    },
+    segmentation: getArithmeticOperation,
+    multiplication: getArithmeticOperation,
+    summation: getArithmeticOperation,
+    subtraction: getArithmeticOperation,
     clear: function () {
       currentNumber = '0';
       currentCalculationStr = '';
@@ -61,22 +53,28 @@
       clearDisplay(lastResultField);
       isFloat = false;
       isNewOperation = true;
-      isLastOperationArithmetic = true;
+      isLastOperationArithmetic = false;
       // isFirstOperation = true;
     },
     delete: function () {
+      var modifiedByDeletionNumber;
       if (!isNewOperation) {
-        if (deleteChangedNumber.length !== 0) {
-          deleteChangedNumber = currentNumber.slice(0, -1);
+        if (!isTotalDeleted) {
+          if (currentNumber.length > 1) {
+            modifiedByDeletionNumber = currentNumber.slice(0, -1);
+            currentNumber = '';
+            changeCurrentNumber(modifiedByDeletionNumber);
+          } else {
+            modifiedByDeletionNumber = 0;
+            currentNumber = '';
+            changeCurrentNumber(modifiedByDeletionNumber);
+            isNewOperation = true;
+            isLastOperationArithmetic = false;
+            isTotalDeleted = true;
+          }
+        } else {
+          return
         }
-
-        if (deleteChangedNumber.length === 0) {
-          deleteChangedNumber = 0;
-          isNewOperation = true;
-          isLastOperationArithmetic = true;
-        }
-        currentNumber = '';
-        changeCurrentNumberAndNumberFieldValue(deleteChangedNumber);
       } else {
         return;
       }
@@ -85,15 +83,19 @@
       if (!isFloat) {
         var changedNumber = currentNumber + '.';
         currentNumber = '';
-        changeCurrentNumberAndNumberFieldValue(changedNumber);
+        changeCurrentNumber(changedNumber);
         isFloat = true;
+        isZeroAvailable = true;
       } else {
         return;
       }
     },
     result:function (operation) {
-
     }
+  }
+
+  function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
+    operations.arithmetic(currentArithmeticOperationBtnPressed);
   }
 
   function setNextCalculationStep(arithmeticSign) {
@@ -102,7 +104,8 @@
     isFloat = false;
     isNewOperation = true;
     isLastOperationArithmetic = true;
-    isFirstOperation = false;
+    isZeroAvailable = true;
+    // isFirstOperation = false;
   }
 
   function changeLastArithmeticOperationSign(lastArithmeticSign) {
@@ -114,32 +117,40 @@
     input.value = '';
   }
 
-	function changeCurrentNumberAndNumberFieldValue(newValue) {
+	function changeCurrentNumber(newValue) {
     if (isNewOperation) {
       clearDisplay(numberField);
       currentNumber = '';
       isNewOperation = false;
+      isTotalDeleted = false;
     }
     currentNumber += newValue;
     numberField.value = currentNumber;
   }
 
   function changeCurrentCalculation(buttonValue) {
-    if (isNaN(+buttonValue)) {
-      operations[buttonValue](buttonValue);
+    var currentValue = buttonValue;
+    if (isNaN(+currentValue)) {
+      operations[currentValue](currentValue);
     } else {
-      if (+buttonValue === 0 && isNewOperation) {
+      if (+currentValue === 0 && !isZeroAvailable) {
         return;
+      } else if (+currentValue === 0 && isNewOperation && isZeroAvailable) {
+        isZeroAvailable = false;
       }
+
       if (isLastOperationArithmetic) {
         isLastOperationArithmetic = false;
       }
-      changeCurrentNumberAndNumberFieldValue(buttonValue);
+      if (!isZeroAvailable && !isFloat) {
+        currentValue += '.';
+        isFloat = true;
+      }
+      changeCurrentNumber(currentValue);
     }
   }
 
   function onButtonClick(evt) {
-    console.log(isNewOperation)
     evt.preventDefault();
     var target = evt.target;
 
