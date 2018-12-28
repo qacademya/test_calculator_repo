@@ -13,37 +13,31 @@
     SUMMATION_SIGN: ' + ',
     SUBTRACTION_SIGN: ' - '
   }
+
   var isFloat = false;
   var isNewOperation = true;
-  var isLastOperationArithmetic = true;
+  var isLastOperationArithmetic = false;
+  // var isFirstOperation = true;
+
   var pressedButtonValue;
   var currentNumber = numberField.value;
   var currentCalculationStr = '';
   var lastNumber = '';
+  var deleteChangedNumber = '';
   // var lastResult;
   var operations = {
     arithmetic: function (arithmeticOperation) {
       var currentNumberLastSimbol = currentNumber[currentNumber.length - 1];
       var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
-      if (!isNewOperation) {
-        if (!isLastOperationArithmetic) {
-          if (currentNumberLastSimbol === '.') {
-            currentNumber = currentNumber.slice(0, -1);
-          }
-          lastNumber = currentNumber;
-          currentCalculationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
-          calculationField.value = currentCalculationStr;
-          isFloat = false;
-          isNewOperation = true;
-          isLastOperationArithmetic = true;
-        } else {
-          currentNumber = '';
-          changeCurrentNumberAndNumberFieldValue(lastNumber);
-          isNewOperation = true;
+
+      if (!isLastOperationArithmetic) {
+        if (currentNumberLastSimbol === '.') {
+          currentNumber = currentNumber.slice(0, -1);
         }
+        lastNumber = currentNumber;
+        setNextCalculationStep(currentArithmeticSign);
       } else {
-        currentCalculationStr = currentCalculationStr.slice(0, -3) + ArithmeticSigns[currentArithmeticSign];
-        calculationField.value = currentCalculationStr;
+        changeLastArithmeticOperationSign(currentArithmeticSign);
       }
     },
     segmentation: function (operation) {
@@ -68,21 +62,22 @@
       isFloat = false;
       isNewOperation = true;
       isLastOperationArithmetic = true;
+      // isFirstOperation = true;
     },
     delete: function () {
       if (!isNewOperation) {
-        var changedNumber = lastNumber = currentNumber.slice(0, -1);
-        if (changedNumber.length === 0) {
-          changedNumber = lastNumber = 0;
+        if (deleteChangedNumber.length !== 0) {
+          deleteChangedNumber = currentNumber.slice(0, -1);
+        }
+
+        if (deleteChangedNumber.length === 0) {
+          deleteChangedNumber = 0;
           isNewOperation = true;
           isLastOperationArithmetic = true;
         }
-
         currentNumber = '';
-        changeCurrentNumberAndNumberFieldValue(changedNumber);
-
-      }
-      else {
+        changeCurrentNumberAndNumberFieldValue(deleteChangedNumber);
+      } else {
         return;
       }
     },
@@ -96,10 +91,23 @@
         return;
       }
     },
-    result: operationSegmentation,
+    result:function (operation) {
+
+    }
   }
 
-  function operationSegmentation() {
+  function setNextCalculationStep(arithmeticSign) {
+    currentCalculationStr += currentNumber + ArithmeticSigns[arithmeticSign];
+    calculationField.value = currentCalculationStr;
+    isFloat = false;
+    isNewOperation = true;
+    isLastOperationArithmetic = true;
+    isFirstOperation = false;
+  }
+
+  function changeLastArithmeticOperationSign(lastArithmeticSign) {
+    currentCalculationStr = currentCalculationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
+    calculationField.value = currentCalculationStr;
   }
 
   function clearDisplay(input) {
@@ -123,7 +131,9 @@
       if (+buttonValue === 0 && isNewOperation) {
         return;
       }
-      isLastOperationArithmetic = false;
+      if (isLastOperationArithmetic) {
+        isLastOperationArithmetic = false;
+      }
       changeCurrentNumberAndNumberFieldValue(buttonValue);
     }
   }
