@@ -65,13 +65,11 @@
           modifiedByDeletionNumber = currentNumber.slice(0, -1);
           currentNumber = '';
           changeCurrentNumber(modifiedByDeletionNumber);
+          if (currentNumber === '0') {
+            startNewOperationAfterDeletion(modifiedByDeletionNumber);
+          }
         } else {
-          modifiedByDeletionNumber = 0;
-          currentNumber = '';
-          changeCurrentNumber(modifiedByDeletionNumber);
-          isNewOperation = true;
-          isLastOperationArithmetic = false;
-          isTotalDeleted = true;
+          startNewOperationAfterDeletion(modifiedByDeletionNumber);
         }
       } else {
         return;
@@ -90,6 +88,15 @@
     },
     result:function (operation) {
     }
+  }
+
+  function startNewOperationAfterDeletion(modifiedNumber) {
+    modifiedNumber = 0;
+    currentNumber = '';
+    changeCurrentNumber(modifiedNumber);
+    isNewOperation = true;
+    isLastOperationArithmetic = false;
+    isTotalDeleted = true;
   }
 
   function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
