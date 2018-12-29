@@ -105,6 +105,7 @@
     isNewOperation = true;
     isLastOperationArithmetic = true;
     isZeroAvailable = true;
+    currentNumber = '0';
     // isFirstOperation = false;
   }
 
@@ -145,6 +146,7 @@
       if (!isZeroAvailable && !isFloat) {
         currentValue += '.';
         isFloat = true;
+        isZeroAvailable = true;
       }
       changeCurrentNumber(currentValue);
     }
