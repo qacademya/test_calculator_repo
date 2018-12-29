@@ -17,14 +17,14 @@
   var isFloat = false;
   var isNewOperation = true;
   var isLastOperationArithmetic = false;
-  var isZeroAvailable = false;
+  var isZeroAvailable = true;
   var isTotalDeleted;
 
   var pressedButtonValue;
   var currentNumber = numberField.value;
   var currentCalculationStr = '';
   var lastNumber = '';
-  // var lastResult;
+
   var operations = {
     arithmetic: function (arithmeticOperation) {
       var currentNumberLastSimbol = currentNumber[currentNumber.length - 1];
@@ -54,26 +54,24 @@
       isFloat = false;
       isNewOperation = true;
       isLastOperationArithmetic = false;
-      // isFirstOperation = true;
     },
     delete: function () {
       var modifiedByDeletionNumber;
-      if (!isNewOperation) {
-        if (!isTotalDeleted) {
-          if (currentNumber.length > 1) {
-            modifiedByDeletionNumber = currentNumber.slice(0, -1);
-            currentNumber = '';
-            changeCurrentNumber(modifiedByDeletionNumber);
-          } else {
-            modifiedByDeletionNumber = 0;
-            currentNumber = '';
-            changeCurrentNumber(modifiedByDeletionNumber);
-            isNewOperation = true;
-            isLastOperationArithmetic = false;
-            isTotalDeleted = true;
+      if (!isNewOperation && !isTotalDeleted) {
+        if (currentNumber.length > 1) {
+          if (currentNumber[currentNumber.length - 1] === '.') {
+            isFloat = false;
           }
+          modifiedByDeletionNumber = currentNumber.slice(0, -1);
+          currentNumber = '';
+          changeCurrentNumber(modifiedByDeletionNumber);
         } else {
-          return
+          modifiedByDeletionNumber = 0;
+          currentNumber = '';
+          changeCurrentNumber(modifiedByDeletionNumber);
+          isNewOperation = true;
+          isLastOperationArithmetic = false;
+          isTotalDeleted = true;
         }
       } else {
         return;
@@ -106,7 +104,6 @@
     isLastOperationArithmetic = true;
     isZeroAvailable = true;
     currentNumber = '0';
-    // isFirstOperation = false;
   }
 
   function changeLastArithmeticOperationSign(lastArithmeticSign) {
