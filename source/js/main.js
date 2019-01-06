@@ -31,9 +31,6 @@
       var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
 
       if (!isLastOperationArithmetic) {
-        if (currentNumberLastSimbol === '.') {
-          currentNumber = currentNumber.slice(0, -1);
-        }
         lastNumber = currentNumber;
         setNextCalculationStep(currentArithmeticSign);
       } else {
@@ -45,15 +42,14 @@
     summation: getArithmeticOperation,
     subtraction: getArithmeticOperation,
     clear: function () {
-      currentNumber = '0';
-      currentCalculationStr = '';
-      lastNumber = '';
-      numberField.value = 0;
+      currentNumber = numberField.value = '0';
+      currentCalculationStr = lastNumber = '';
       clearDisplay(calculationField);
       clearDisplay(lastResultField);
       isFloat = false;
       isNewOperation = true;
       isLastOperationArithmetic = false;
+      isZeroAvailable = true;
     },
     delete: function () {
       var modifiedByDeletionNumber;
@@ -104,7 +100,7 @@
   }
 
   function setNextCalculationStep(arithmeticSign) {
-    currentCalculationStr += currentNumber + ArithmeticSigns[arithmeticSign];
+    currentCalculationStr += Number(currentNumber) + ArithmeticSigns[arithmeticSign];
     calculationField.value = currentCalculationStr;
     isFloat = false;
     isNewOperation = true;

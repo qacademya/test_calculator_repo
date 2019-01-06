@@ -4,13 +4,40 @@
 	flex-wrap: wrap;
 }
 
+.button {
+  background-color: $main_color;
+  border: none;
+
+  &:hover,
+  &:focus {
+    outline: none;
+  }
+
+  &:hover {
+    background-color: $second_color;
+  }
+
+  &:active {
+    background-color: darken($second_color, 30%);
+  }
+}
+
 .buttons__block {
 	display: flex;
 	flex-wrap: wrap;
 
 	&--service {
 		justify-content: flex-end;
-		width: 280px;
+    width: 280px;
+    margin-bottom: 15px;
+
+    & .button {
+      margin-right: 5px;
+		}
+
+		& .button:last-child {
+			margin-right: 0;
+		}
 	}
 
 	&--numbers {
@@ -18,7 +45,8 @@
 		box-sizing: border-box;
 
 		& .button {
-			margin-right: 10px;
+      margin-right: 10px;
+      margin-bottom: 5px;
 		}
 
 		& .button:nth-child(3n) {
