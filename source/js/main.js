@@ -25,16 +25,30 @@
   var pressedButtonValue;
   var currentNumber = DEFAULT_CURRENT_NUMBER;
   var currentCalculationStr = '';
-  var lastNumber = '';
+  var currentOperationStr = '';
+  var currentResult = '';
 
   var operations = {
     arithmetic: function (arithmeticOperation) {
       var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
 
       if (!isLastOperationArithmetic) {
-        setNextCalculationStep(currentArithmeticSign);
+        if (isFirstOperation) {
+          currentOperationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
+        } else {
+          currentOperationStr += currentNumber;
+          currentResult = getResult();
+          numberField.value = currentResult;
+          currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
+        }
+        changeCurrentCalculationStr(currentArithmeticSign);
+        setNextCalculationStep();
       } else {
-        changeLastArithmeticOperationSign(currentArithmeticSign);
+        changeNextArithmeticOperation(currentArithmeticSign);
+      }
+
+      if (isFirstOperation) {
+        isFirstOperation = false;
       }
     },
     segmentation: getArithmeticOperation,
@@ -43,12 +57,13 @@
     subtraction: getArithmeticOperation,
     clear: function () {
       currentNumber = numberField.value = DEFAULT_CURRENT_NUMBER;
-      currentCalculationStr = lastNumber = '';
+      currentCalculationStr = currentOperationStr = currentResult = '';
       clearDisplay(calculationField);
       clearDisplay(lastResultField);
       isFloat = false;
       isNewOperation = true;
       isLastOperationArithmetic = false;
+      isFirstOperation = true;
     },
     delete: function () {
       var modifiedByDeletionNumber;
@@ -98,7 +113,14 @@
     }
   }
 
-  function resetDisplays() {
+  function getOperands() {
+    var operands = currentOperationStr.split(' ').slice(0, 3);
+    return operands;
+  }
+
+  function getResult() {
+    var result = Number(eval(getOperands().join(' ')).toFixed(10));
+    return result;
 
   }
 
@@ -106,17 +128,21 @@
     operations.arithmetic(currentArithmeticOperationBtnPressed);
   }
 
-  function setNextCalculationStep(arithmeticSign) {
-    currentCalculationStr += Number(currentNumber) + ArithmeticSigns[arithmeticSign];
-    calculationField.value = currentCalculationStr;
+  function setNextCalculationStep() {
     isFloat = false;
     isNewOperation = true;
     isLastOperationArithmetic = true;
     currentNumber = DEFAULT_CURRENT_NUMBER;
   }
 
-  function changeLastArithmeticOperationSign(lastArithmeticSign) {
+  function changeCurrentCalculationStr(arithmeticSign) {
+    currentCalculationStr += Number(currentNumber) + ArithmeticSigns[arithmeticSign];
+    calculationField.value = currentCalculationStr;
+  }
+
+  function changeNextArithmeticOperation(lastArithmeticSign) {
     currentCalculationStr = currentCalculationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
+    currentOperationStr = currentOperationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
     calculationField.value = currentCalculationStr;
   }
 
@@ -149,6 +175,7 @@
       if (isLastOperationArithmetic) {
         isLastOperationArithmetic = false;
       }
+      // isReady = true;
 
       if (+currentValue === 0 && isNewOperation) {
         operations.float();
