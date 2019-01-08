@@ -2,13 +2,14 @@
 
 (function () {
   var DEFAULT_CURRENT_NUMBER = '0';
+  var FLOAT_PRECISION = 10;
 
   var calculator = document.querySelector('.calculator');
   var buttons = calculator.querySelector('.buttons');
 	var calculationField = calculator.querySelector('#screen_calculation');
 	var numberField = calculator.querySelector('#screen_number');
   var lastResultField = calculator.querySelector('#screen_result');
-  // var specialOperations = ['segmentation', 'multiplication', 'summation', 'subtraction', 'clear', 'delete', 'float', 'result'];
+
   var ArithmeticSigns = {
     SEGMENTATION_SIGN: ' / ',
     MULTIPLICATION_SIGN: ' * ',
@@ -19,10 +20,8 @@
   var isFloat = false;
   var isNewOperation = true;
   var isLastOperationArithmetic = false;
-  var isZeroAvailable = true;
   var isFirstOperation = true;
 
-  var pressedButtonValue;
   var currentNumber = DEFAULT_CURRENT_NUMBER;
   var currentCalculationStr = '';
   var currentOperationStr = '';
@@ -59,27 +58,25 @@
       currentNumber = numberField.value = DEFAULT_CURRENT_NUMBER;
       currentCalculationStr = currentOperationStr = currentResult = '';
       clearDisplay(calculationField);
-      clearDisplay(lastResultField);
-      isFloat = false;
-      isNewOperation = true;
-      isLastOperationArithmetic = false;
-      isFirstOperation = true;
+      setBooleansDefault();
     },
     delete: function () {
       var modifiedByDeletionNumber;
+      var currentNumberLastSimbol = currentNumber[currentNumber.length - 1];
 
       if (!isNewOperation) {
         if (currentNumber.length > 1) {
-          if (currentNumber[currentNumber.length - 1] === '.') {
+          if (currentNumberLastSimbol === '.') {
             isFloat = false;
           }
           modifiedByDeletionNumber = currentNumber.slice(0, -1);
           replaceCurrentNumber(modifiedByDeletionNumber);
-          if (currentNumber === '0') {
-            startNewOperationAfterDeletion(modifiedByDeletionNumber);
+          if (currentNumber === DEFAULT_CURRENT_NUMBER) {
+            startNewOperationAfterTotalDeletion(modifiedByDeletionNumber);
           }
-        } else {
-          startNewOperationAfterDeletion(modifiedByDeletionNumber);
+        }
+        else {
+          startNewOperationAfterTotalDeletion(modifiedByDeletionNumber);
         }
       } else {
         return;
@@ -89,39 +86,40 @@
       var FLOAT_SIGN = '.';
 
       if (!isFloat) {
+        if (isNewOperation) {
+          replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+        }
         changeCurrentNumber(FLOAT_SIGN);
         isFloat = true;
-        isZeroAvailable = true;
-        if (isNewOperation) {
-          isNewOperation = false;
-        }
+        isNewOperation = false;
       } else {
         return;
       }
     },
     result: function () {
-      currentCalculationStr += currentNumber;
-      console.log(currentCalculationStr)
-      currentNumber = Number(eval(currentCalculationStr).toFixed(10));
-      // lastNumber = currentNumber = Number(eval(currentCalculationStr).toFixed(10));
-      numberField.value = currentNumber;
-      // lastResultField.value = numberField.value = lastNumber;
-      clearDisplay(calculationField);
-      currentCalculationStr = '';
-      isFloat = false;
-      isNewOperation = true;
+      if (!isFirstOperation) {
+        currentOperationStr += currentNumber;
+        currentResult = getResult();
+        currentOperationStr = '';
+        currentCalculationStr = '';
+        replaceCurrentNumber(currentResult);
+        clearDisplay(calculationField);
+        setBooleansDefault();
+      } else {
+        return;
+      }
     }
   }
 
-  function getOperands() {
-    var operands = currentOperationStr.split(' ').slice(0, 3);
-    return operands;
+  function setBooleansDefault() {
+    isFloat = false;
+    isNewOperation = true;
+    isLastOperationArithmetic = false;
+    isFirstOperation - true;
   }
 
   function getResult() {
-    var result = Number(eval(getOperands().join(' ')).toFixed(10));
-    return result;
-
+    return Number(eval(currentOperationStr).toFixed(FLOAT_PRECISION));
   }
 
   function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
@@ -132,7 +130,6 @@
     isFloat = false;
     isNewOperation = true;
     isLastOperationArithmetic = true;
-    currentNumber = DEFAULT_CURRENT_NUMBER;
   }
 
   function changeCurrentCalculationStr(arithmeticSign) {
@@ -146,11 +143,10 @@
     calculationField.value = currentCalculationStr;
   }
 
-  function startNewOperationAfterDeletion(modifiedNumber) {
+  function startNewOperationAfterTotalDeletion(modifiedNumber) {
     modifiedNumber = DEFAULT_CURRENT_NUMBER;
     replaceCurrentNumber(modifiedNumber);
     isNewOperation = true;
-    isLastOperationArithmetic = false;
   }
 
   function clearDisplay(input) {
@@ -167,28 +163,26 @@
     changeCurrentNumber(newValue);
   }
 
-  function changeCurrentCalculation(buttonValue) {
-    var currentValue = buttonValue;
-    if (isNaN(+currentValue)) {
-      operations[currentValue](currentValue);
+  function changeCurrentCalculation(pressedButton) {
+    var pressedButtonValue = Number(pressedButton);
+    if (isNaN(pressedButtonValue)) {
+      operations[pressedButton](pressedButton);
     } else {
       if (isLastOperationArithmetic) {
         isLastOperationArithmetic = false;
       }
-      // isReady = true;
-
-      if (+currentValue === 0 && isNewOperation) {
-        operations.float();
-        return;
-      }
 
       if (isNewOperation) {
-        clearDisplay(numberField);
-        currentNumber = '';
-        isNewOperation = false;
+        if (pressedButtonValue === 0) {
+          replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+          return;
+        } else {
+          clearDisplay(numberField);
+          currentNumber = '';
+          isNewOperation = false;
+        }
       }
-
-      changeCurrentNumber(currentValue);
+      changeCurrentNumber(pressedButtonValue);
     }
   }
 
@@ -200,9 +194,9 @@
       return;
     }
 
-    pressedButtonValue = target.dataset.type;
+    var pressedButton = target.dataset.type;
 
-    changeCurrentCalculation(pressedButtonValue);
+    changeCurrentCalculation(pressedButton);
   }
 
   clearDisplay(calculationField);
