@@ -22,9 +22,8 @@
 
 .calculator__screen {
 	display: flex;
-	flex-direction: column;
+  flex-direction: column;
 
-	background-color: #ffffff;
 	border: 2px solid #000;
 }
 
@@ -46,4 +45,4 @@
 		font-size: 35px;
 		line-height: 45px;
 	}
-} 
+}
