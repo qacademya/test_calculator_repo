@@ -31,14 +31,7 @@ gulp.task('sass', function () {
 gulp.task('js', function (cb) {
   pump([
         gulp.src('source/js/*.js'),
-        gulp.dest('build/js')
-    ],
-    cb
-  );
-});
-gulp.task('js', function (cb) {
-  pump([
-        gulp.src('source/js/*.js'),
+        gulp.dest('build/js'),
         uglify(),
         rename(function (path) {
           path.basename += '.min';
@@ -52,8 +45,7 @@ gulp.task('js', function (cb) {
 gulp.task('copy', function () {
   return gulp.src([
     'source/fonts/**/*.{woff,woff2}',
-    'source/img/**',
-    'source/js/**'
+    'source/img/**'
   ], {
     base: 'source'
   })
