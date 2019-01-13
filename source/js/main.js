@@ -6,15 +6,15 @@
 
   var calculator = document.querySelector('.calculator');
   var buttons = calculator.querySelector('.buttons');
-	var calculationField = calculator.querySelector('#screen_calculation');
-	var numberField = calculator.querySelector('#screen_number');
+  var calculationField = calculator.querySelector('#screen_calculation');
+  var numberField = calculator.querySelector('#screen_number');
 
   var ArithmeticSigns = {
     SEGMENTATION_SIGN: ' / ',
     MULTIPLICATION_SIGN: ' * ',
     SUMMATION_SIGN: ' + ',
     SUBTRACTION_SIGN: ' - ',
-  }
+  };
 
   var isFloat = false;
   var isNewOperation = true;
@@ -36,13 +36,13 @@
     delete: deleteCurrentNumberSimbol,
     float: setFloatingPointNumber,
     result: getCalculationResult,
-  }
+  };
 
   function setBooleansDefault() {
     isFloat = false;
     isNewOperation = true;
     isLastOperationArithmetic = false;
-    isFirstOperation - true;
+    isFirstOperation = true;
   }
 
   function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
@@ -80,12 +80,12 @@
     input.value = '';
   }
 
-	function changeCurrentNumber(newValue) {
+  function changeCurrentNumber(newValue) {
     currentNumber += newValue;
     numberField.value = currentNumber;
   }
 
-	function replaceCurrentNumber(newValue) {
+  function replaceCurrentNumber(newValue) {
     currentNumber = '';
     changeCurrentNumber(newValue);
   }
@@ -134,8 +134,7 @@
         if (currentNumber === DEFAULT_CURRENT_NUMBER) {
           startNewOperationAfterTotalDeletion(modifiedByDeletionNumber);
         }
-      }
-      else {
+      } else {
         startNewOperationAfterTotalDeletion(modifiedByDeletionNumber);
       }
     } else {
