@@ -3,6 +3,9 @@
 (function () {
   var DEFAULT_CURRENT_NUMBER = '0';
   var FLOAT_PRECISION = 10;
+  var DEFAULT_FONT_SIZE;
+  var SMALLER_FONT_SIZE;
+  var FONT_SIZE_STEP = 10;
 
   var calculator = document.querySelector('.calculator');
   var buttons = calculator.querySelector('.buttons');
@@ -29,11 +32,12 @@
   var currentResult = '';
 
   var operations = {
-    arithmetic: doArithmeticOperation,
+    arithmetic: performArithmeticOperation,
     segmentation: getArithmeticOperation,
     multiplication: getArithmeticOperation,
     summation: getArithmeticOperation,
     subtraction: getArithmeticOperation,
+    square: getSquare,
     reset: resetCalculation,
     clear: clearCurrentNumber,
     delete: deleteCurrentNumberSimbol,
@@ -49,12 +53,25 @@
     isResultReceived = false;
   }
 
+  function getDisplayDefaultFontSize() {
+    return window.getComputedStyle(numberField, null).getPropertyValue('font-size');
+  }
+
+  function getDisplaySmallerFontSize() {
+    return (parseInt(DEFAULT_FONT_SIZE, 10) - FONT_SIZE_STEP) + 'px';
+  }
+
   function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
     operations.arithmetic(currentArithmeticOperationBtnPressed);
   }
 
   function getResult(operationStr) {
     return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
+  }
+
+  function getSquare() {
+    var squareOfNumber = currentNumber * currentNumber;
+    replaceCurrentNumber(squareOfNumber);
   }
 
   function setNextCalculationStep() {
@@ -84,6 +101,10 @@
     input.value = '';
   }
 
+  function changeDisplayFontSize(fontSize) {
+    numberField.style.fontSize = fontSize;
+  }
+
   function changeCurrentNumber(newValue) {
     currentNumber += newValue;
     numberField.value = currentNumber;
@@ -94,7 +115,7 @@
     changeCurrentNumber(newValue);
   }
 
-  function doArithmeticOperation(arithmeticOperation) {
+  function performArithmeticOperation(arithmeticOperation) {
     var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
 
     if (!isLastOperationArithmetic) {
@@ -122,6 +143,7 @@
 
   function resetCalculation() {
     currentCalculationStr = currentOperationStr = currentResult = lastOperationStr = '';
+    numberField.style.fontSize = '';
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     clearDisplay(calculationField);
     setBooleansDefault();
@@ -132,7 +154,6 @@
     currentResult = DEFAULT_CURRENT_NUMBER;
     isFloat = false;
     isNewOperation = true;
-    // isResultReceived = false;
   }
 
   function deleteCurrentNumberSimbol() {
@@ -196,6 +217,11 @@
         currentResult = currentNumber;
       }
     }
+    if (numberField.value.length > 15) {
+      changeDisplayFontSize(SMALLER_FONT_SIZE);
+    } else {
+      changeDisplayFontSize(DEFAULT_FONT_SIZE);
+    }
   }
 
   function getCalculationResult() {
@@ -237,6 +263,8 @@
     changeCurrentCalculation(pressedButton);
   }
 
+  DEFAULT_FONT_SIZE = getDisplayDefaultFontSize();
+  SMALLER_FONT_SIZE = getDisplaySmallerFontSize();
   clearDisplay(calculationField);
   buttons.addEventListener('click', onButtonClick);
 })();
