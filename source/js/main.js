@@ -20,10 +20,12 @@
   var isNewOperation = true;
   var isLastOperationArithmetic = false;
   var isFirstOperation = true;
+  var isResultReceived = false;
 
   var currentNumber = DEFAULT_CURRENT_NUMBER;
   var currentCalculationStr = '';
   var currentOperationStr = '';
+  var lastOperationStr = '';
   var currentResult = '';
 
   var operations = {
@@ -44,14 +46,15 @@
     isNewOperation = true;
     isLastOperationArithmetic = false;
     isFirstOperation = true;
+    isResultReceived = false;
   }
 
   function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
     operations.arithmetic(currentArithmeticOperationBtnPressed);
   }
 
-  function getResult() {
-    return Number(eval(currentOperationStr).toFixed(FLOAT_PRECISION));
+  function getResult(operationStr) {
+    return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
   }
 
   function setNextCalculationStep() {
@@ -99,9 +102,12 @@
         currentOperationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
       } else {
         currentOperationStr += currentNumber;
-        currentResult = getResult();
+        currentResult = getResult(currentOperationStr);
         numberField.value = currentResult;
         currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
+      }
+      if (isResultReceived) {
+        isResultReceived = false;
       }
       changeCurrentCalculationStr(currentArithmeticSign);
       setNextCalculationStep();
@@ -115,7 +121,7 @@
   }
 
   function resetCalculation() {
-    currentCalculationStr = currentOperationStr = currentResult = '';
+    currentCalculationStr = currentOperationStr = currentResult = lastOperationStr = '';
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     clearDisplay(calculationField);
     setBooleansDefault();
@@ -123,8 +129,10 @@
 
   function clearCurrentNumber() {
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+    currentResult = DEFAULT_CURRENT_NUMBER;
     isFloat = false;
     isNewOperation = true;
+    // isResultReceived = false;
   }
 
   function deleteCurrentNumberSimbol() {
@@ -172,10 +180,10 @@
       if (isLastOperationArithmetic) {
         isLastOperationArithmetic = false;
       }
-
       if (isNewOperation) {
         if (pressedButtonValue === 0) {
           replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+          currentResult = currentNumber;
           return;
         } else {
           clearDisplay(numberField);
@@ -184,20 +192,35 @@
         }
       }
       changeCurrentNumber(pressedButtonValue);
+      if (isResultReceived) {
+        currentResult = currentNumber;
+      }
     }
   }
 
   function getCalculationResult() {
     if (!isFirstOperation) {
       currentOperationStr += currentNumber;
-      currentResult = getResult();
+      currentResult = getResult(currentOperationStr);
+      lastOperationStr = currentOperationStr;
       currentOperationStr = '';
       currentCalculationStr = '';
       replaceCurrentNumber(currentResult);
       clearDisplay(calculationField);
       setBooleansDefault();
+      isResultReceived = true;
     } else {
-      return;
+      if (isResultReceived) {
+        var lastOperationArr = lastOperationStr.split(' ');
+        lastOperationArr[0] = currentResult;
+        lastOperationStr = lastOperationArr.join(' ');
+        currentResult = getResult(lastOperationStr);
+        replaceCurrentNumber(currentResult);
+        isNewOperation = true;
+        isFloat = false;
+      } else {
+        return;
+      }
     }
   }
 
