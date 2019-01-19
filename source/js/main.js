@@ -32,7 +32,8 @@
     multiplication: getArithmeticOperation,
     summation: getArithmeticOperation,
     subtraction: getArithmeticOperation,
-    clear: resetCalculation,
+    reset: resetCalculation,
+    clear: clearCurrentNumber,
     delete: deleteCurrentNumberSimbol,
     float: setFloatingPointNumber,
     result: getCalculationResult,
@@ -114,10 +115,16 @@
   }
 
   function resetCalculation() {
-    currentNumber = numberField.value = DEFAULT_CURRENT_NUMBER;
     currentCalculationStr = currentOperationStr = currentResult = '';
+    replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     clearDisplay(calculationField);
     setBooleansDefault();
+  }
+
+  function clearCurrentNumber() {
+    replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+    isFloat = false;
+    isNewOperation = true;
   }
 
   function deleteCurrentNumberSimbol() {

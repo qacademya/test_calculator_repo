@@ -28,7 +28,7 @@
 
 	&--service {
 		justify-content: flex-end;
-    width: 280px;
+    width: 100%;
     margin-bottom: 15px;
 
     & .button {
@@ -52,12 +52,24 @@
 		& .button:nth-child(3n) {
 			margin-right: 0;
 		}
+  }
+
+  &--math {
+    display: flex;
+		justify-content: flex-end;
+		margin-left: auto;
 	}
 
 	&--signs {
 		justify-content: flex-end;
 		width: 50px;
 		margin-left: auto;
+  }
+
+  &--operations {
+		justify-content: flex-end;
+		width: 50px;
+		margin-left: 5px;
 	}
 }
 
