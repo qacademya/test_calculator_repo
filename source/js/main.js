@@ -24,6 +24,7 @@
   var isLastOperationArithmetic = false;
   var isFirstOperation = true;
   var isResultReceived = false;
+  var isSpecialOperations = false;
 
   var currentNumber = DEFAULT_CURRENT_NUMBER;
   var currentCalculationStr = '';
@@ -51,6 +52,7 @@
     isLastOperationArithmetic = false;
     isFirstOperation = true;
     isResultReceived = false;
+    isSpecialOperations = false;
   }
 
   function getDisplayDefaultFontSize() {
@@ -70,8 +72,10 @@
   }
 
   function getSquare() {
-    var squareOfNumber = currentNumber * currentNumber;
+    isSpecialOperations = true;
+    var squareOfNumber = Number((Number(currentNumber) * Number(currentNumber)).toFixed(FLOAT_PRECISION));
     replaceCurrentNumber(squareOfNumber);
+    isNewOperation = true;
   }
 
   function setNextCalculationStep() {
@@ -139,6 +143,7 @@
     if (isFirstOperation) {
       isFirstOperation = false;
     }
+    isSpecialOperations = false;
   }
 
   function resetCalculation() {
@@ -193,6 +198,32 @@
     }
   }
 
+  function getCalculationResult() {
+    if (!isFirstOperation) {
+      currentOperationStr += currentNumber;
+      currentResult = getResult(currentOperationStr);
+      lastOperationStr = currentOperationStr;
+      currentOperationStr = '';
+      currentCalculationStr = '';
+      replaceCurrentNumber(currentResult);
+      clearDisplay(calculationField);
+      setBooleansDefault();
+      isResultReceived = true;
+    } else {
+      if (isResultReceived) {
+        var lastOperationArr = lastOperationStr.split(' ');
+        lastOperationArr[0] = currentResult;
+        lastOperationStr = lastOperationArr.join(' ');
+        currentResult = getResult(lastOperationStr);
+        replaceCurrentNumber(currentResult);
+        isNewOperation = true;
+        isFloat = false;
+      } else {
+        return;
+      }
+    }
+  }
+
   function changeCurrentCalculation(pressedButton) {
     var pressedButtonValue = Number(pressedButton);
     if (isNaN(pressedButtonValue)) {
@@ -221,32 +252,6 @@
       changeDisplayFontSize(SMALLER_FONT_SIZE);
     } else {
       changeDisplayFontSize(DEFAULT_FONT_SIZE);
-    }
-  }
-
-  function getCalculationResult() {
-    if (!isFirstOperation) {
-      currentOperationStr += currentNumber;
-      currentResult = getResult(currentOperationStr);
-      lastOperationStr = currentOperationStr;
-      currentOperationStr = '';
-      currentCalculationStr = '';
-      replaceCurrentNumber(currentResult);
-      clearDisplay(calculationField);
-      setBooleansDefault();
-      isResultReceived = true;
-    } else {
-      if (isResultReceived) {
-        var lastOperationArr = lastOperationStr.split(' ');
-        lastOperationArr[0] = currentResult;
-        lastOperationStr = lastOperationArr.join(' ');
-        currentResult = getResult(lastOperationStr);
-        replaceCurrentNumber(currentResult);
-        isNewOperation = true;
-        isFloat = false;
-      } else {
-        return;
-      }
     }
   }
 
