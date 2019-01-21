@@ -19,10 +19,10 @@
     SUBTRACTION_SIGN: ' - ',
   };
 
-  var isFloat = false;
-  var isNewOperation = true;
-  var isLastOperationArithmetic = false;
   var isFirstOperation = true;
+  var isFloat = false;
+  var isLastOperationArithmetic = false;
+  var isNewOperation = true;
   var isResultReceived = false;
   var isSpecialOperations = false;
 
@@ -47,10 +47,10 @@
   };
 
   function setBooleansDefault() {
-    isFloat = false;
-    isNewOperation = true;
-    isLastOperationArithmetic = false;
     isFirstOperation = true;
+    isFloat = false;
+    isLastOperationArithmetic = false;
+    isNewOperation = true;
     isResultReceived = false;
     isSpecialOperations = false;
   }
@@ -80,8 +80,8 @@
 
   function setNextCalculationStep() {
     isFloat = false;
-    isNewOperation = true;
     isLastOperationArithmetic = true;
+    isNewOperation = true;
   }
 
   function changeCurrentCalculationStr(arithmeticSign) {
@@ -125,15 +125,14 @@
     if (!isLastOperationArithmetic) {
       if (isFirstOperation) {
         currentOperationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
+        currentResult = currentNumber;
       } else {
         currentOperationStr += currentNumber;
         currentResult = getResult(currentOperationStr);
         numberField.value = currentResult;
         currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
-      if (isResultReceived) {
-        isResultReceived = false;
-      }
+      isResultReceived = false;
       changeCurrentCalculationStr(currentArithmeticSign);
       setNextCalculationStep();
     } else {
@@ -199,28 +198,28 @@
   }
 
   function getCalculationResult() {
-    if (!isFirstOperation) {
-      currentOperationStr += currentNumber;
+    if (isResultReceived) {
+      var lastOperationArr = lastOperationStr.split(' ');
+      lastOperationArr[0] = currentResult;
+      lastOperationStr = lastOperationArr.join(' ');
+      currentResult = getResult(lastOperationStr);
+      replaceCurrentNumber(currentResult);
+      isFloat = false;
+      isNewOperation = true;
+    } else {
+      if (isLastOperationArithmetic) {
+        currentOperationStr += currentResult;
+      } else {
+        currentOperationStr += currentNumber;
+      }
       currentResult = getResult(currentOperationStr);
+      replaceCurrentNumber(currentResult);
+      clearDisplay(calculationField);
       lastOperationStr = currentOperationStr;
       currentOperationStr = '';
       currentCalculationStr = '';
-      replaceCurrentNumber(currentResult);
-      clearDisplay(calculationField);
       setBooleansDefault();
       isResultReceived = true;
-    } else {
-      if (isResultReceived) {
-        var lastOperationArr = lastOperationStr.split(' ');
-        lastOperationArr[0] = currentResult;
-        lastOperationStr = lastOperationArr.join(' ');
-        currentResult = getResult(lastOperationStr);
-        replaceCurrentNumber(currentResult);
-        isNewOperation = true;
-        isFloat = false;
-      } else {
-        return;
-      }
     }
   }
 
