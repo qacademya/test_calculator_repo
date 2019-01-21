@@ -19,6 +19,12 @@
     SUBTRACTION_SIGN: ' - ',
   };
 
+  var SpecialSigns = {
+    SQUARE: 'sqr',
+    ROOT: '√',
+    FRACTION: '1/',
+  }
+
   var isFirstOperation = true;
   var isFloat = false;
   var isLastOperationArithmetic = false;
@@ -79,13 +85,16 @@
   }
 
   function performSpecialOpertaion(specialOpertaion) {
+    var SPECIAL_SIGN = SpecialSigns[specialOpertaion.toUpperCase()];
     var operationNumber;
     if (isLastOperationArithmetic) {
       operationNumber = currentResult;
     } else {
       operationNumber = currentNumber;
     }
-    
+
+    isSpecialOperations = true;
+
     if (specialOpertaion === 'square') {
       currentResult = getSquare(operationNumber);
     } else if (specialOpertaion === 'root') {
@@ -94,9 +103,9 @@
       currentResult = getFraction(operationNumber);
     }
     replaceCurrentNumber(currentResult);
+    changeCurrentCalculationStr(operationNumber, SPECIAL_SIGN)
     isLastOperationArithmetic = false;
     isNewOperation = true;
-    isSpecialOperations = true;
   }
 
   function getSquare(operationNumber) {
@@ -117,8 +126,13 @@
     isNewOperation = true;
   }
 
-  function changeCurrentCalculationStr(arithmeticSign) {
-    currentCalculationStr += Number(currentNumber) + ArithmeticSigns[arithmeticSign];
+  function changeCurrentCalculationStr(number, sign) {
+    if (isSpecialOperations) {
+      currentCalculationStr += sign + '(' + number + ')';
+      isSpecialOperations = false;
+    } else {
+      currentCalculationStr += ArithmeticSigns[sign];
+    }
     calculationField.value = currentCalculationStr;
   }
 
@@ -166,7 +180,7 @@
         currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
       isResultReceived = false;
-      changeCurrentCalculationStr(currentArithmeticSign);
+      changeCurrentCalculationStr(currentNumber, currentArithmeticSign);
       setNextCalculationStep();
     } else {
       changeNextArithmeticOperation(currentArithmeticSign);
