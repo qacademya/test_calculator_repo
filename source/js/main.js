@@ -2,7 +2,7 @@
 
 (function () {
   var DEFAULT_CURRENT_NUMBER = '0';
-  var FLOAT_PRECISION = 10;
+  var FLOAT_PRECISION = 11;
   var DEFAULT_FONT_SIZE;
   var SMALLER_FONT_SIZE;
   var FONT_SIZE_STEP = 10;
@@ -34,11 +34,14 @@
 
   var operations = {
     arithmetic: performArithmeticOperation,
+    special: performSpecialOpertaion,
     segmentation: getArithmeticOperation,
     multiplication: getArithmeticOperation,
     summation: getArithmeticOperation,
     subtraction: getArithmeticOperation,
-    square: getSquare,
+    square: getSpecialOperation,
+    root: getSpecialOperation,
+    fraction: getSpecialOperation,
     reset: resetCalculation,
     clear: clearCurrentNumber,
     delete: deleteCurrentNumberSimbol,
@@ -67,15 +70,45 @@
     operations.arithmetic(currentArithmeticOperationBtnPressed);
   }
 
-  function getResult(operationStr) {
+  function getArithmeticOperationResult(operationStr) {
     return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
   }
 
-  function getSquare() {
-    isSpecialOperations = true;
-    var squareOfNumber = Number((Number(currentNumber) * Number(currentNumber)).toFixed(FLOAT_PRECISION));
-    replaceCurrentNumber(squareOfNumber);
+  function getSpecialOperation(currentSpecialOperationBtnPressed) {
+    operations.special(currentSpecialOperationBtnPressed);
+  }
+
+  function performSpecialOpertaion(specialOpertaion) {
+    var operationNumber;
+    if (isLastOperationArithmetic) {
+      operationNumber = currentResult;
+    } else {
+      operationNumber = currentNumber;
+    }
+    
+    if (specialOpertaion === 'square') {
+      currentResult = getSquare(operationNumber);
+    } else if (specialOpertaion === 'root') {
+      currentResult = getRoot(operationNumber);
+    } else if (specialOpertaion === 'fraction') {
+      currentResult = getFraction(operationNumber);
+    }
+    replaceCurrentNumber(currentResult);
+    isLastOperationArithmetic = false;
     isNewOperation = true;
+    isSpecialOperations = true;
+  }
+
+  function getSquare(operationNumber) {
+    return Number((Number(operationNumber) * Number(operationNumber)).toFixed(FLOAT_PRECISION));
+  }
+
+  function getRoot(operationNumber) {
+    return Number((Math.sqrt(Number(operationNumber))).toFixed(FLOAT_PRECISION));
+  }
+
+  function getFraction(operationNumber) {
+    return Number(1 / (Number(operationNumber)).toFixed(FLOAT_PRECISION));
   }
 
   function setNextCalculationStep() {
@@ -128,7 +161,7 @@
         currentResult = currentNumber;
       } else {
         currentOperationStr += currentNumber;
-        currentResult = getResult(currentOperationStr);
+        currentResult = getArithmeticOperationResult(currentOperationStr);
         numberField.value = currentResult;
         currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
@@ -202,7 +235,7 @@
       var lastOperationArr = lastOperationStr.split(' ');
       lastOperationArr[0] = currentResult;
       lastOperationStr = lastOperationArr.join(' ');
-      currentResult = getResult(lastOperationStr);
+      currentResult = getArithmeticOperationResult(lastOperationStr);
       replaceCurrentNumber(currentResult);
       isFloat = false;
       isNewOperation = true;
@@ -212,7 +245,7 @@
       } else {
         currentOperationStr += currentNumber;
       }
-      currentResult = getResult(currentOperationStr);
+      currentResult = getArithmeticOperationResult(currentOperationStr);
       replaceCurrentNumber(currentResult);
       clearDisplay(calculationField);
       lastOperationStr = currentOperationStr;
