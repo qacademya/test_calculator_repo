@@ -20,6 +20,7 @@
   };
 
   var SpecialSigns = {
+    PERCENT: '%',
     SQUARE: 'sqr',
     ROOT: '√',
     FRACTION: '1/',
@@ -28,6 +29,7 @@
   var isFirstOperation = true;
   var isFloat = false;
   var isLastOperationArithmetic = false;
+  var isLastOperationPercent = false;
   var isNewOperation = true;
   var isResultReceived = false;
   var isSpecialOperations = false;
@@ -46,6 +48,7 @@
     multiplication: getArithmeticOperation,
     summation: getArithmeticOperation,
     subtraction: getArithmeticOperation,
+    percent: getSpecialOperation,
     square: getSpecialOperation,
     root: getSpecialOperation,
     fraction: getSpecialOperation,
@@ -60,6 +63,7 @@
     isFirstOperation = true;
     isFloat = false;
     isLastOperationArithmetic = false;
+    isLastOperationPercent = false;
     isNewOperation = true;
     isResultReceived = false;
     isSpecialOperations = false;
@@ -77,7 +81,7 @@
     operations.arithmetic(currentArithmeticOperationBtnPressed);
   }
 
-  function getArithmeticOperationResult(operationStr) {
+  function getOperationResult(operationStr) {
     return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
   }
 
@@ -96,17 +100,42 @@
 
     isSpecialOperations = true;
 
-    if (specialOpertaion === 'square') {
+    if (specialOpertaion === 'percent') {
+      currentResult = getPerсent(operationNumber, SPECIAL_SIGN);
+      isLastOperationPercent = true;
+    } else if (specialOpertaion === 'square') {
       currentResult = getSquare(operationNumber);
     } else if (specialOpertaion === 'root') {
       currentResult = getRoot(operationNumber);
     } else if (specialOpertaion === 'fraction') {
       currentResult = getFraction(operationNumber);
     }
-    changeCurrentCalculationStrBySpecial(operationNumber, SPECIAL_SIGN);
+
+    if (!isLastOperationPercent) {
+      changeCurrentCalculationStrBySpecial(operationNumber, SPECIAL_SIGN);
+    }
     replaceCurrentNumber(currentResult);
     isLastOperationArithmetic = false;
     isNewOperation = true;
+  }
+
+  function getPerсent(operationNumber) {
+    if (isFirstOperation) {
+      currentCalculationStr += 0;
+      calculationField.value = currentCalculationStr;
+      return 0;
+    }
+    if (isLastOperationPercent) {
+      clearSpecialString();
+    }
+    var operationArr = currentOperationStr.split(' ');
+    operationArr[2] = operationNumber;
+    var operationStr = operationArr[0] / 100 * operationArr[2];
+    var result = getOperationResult(operationStr);
+    specialString += result;
+    currentCalculationStr += specialString;
+    calculationField.value = currentCalculationStr;
+    return result;
   }
 
   function getSquare(operationNumber) {
@@ -177,7 +206,7 @@
         currentResult = currentNumber;
       } else {
         currentOperationStr += currentNumber;
-        currentResult = getArithmeticOperationResult(currentOperationStr);
+        currentResult = getOperationResult(currentOperationStr);
         numberField.value = currentResult;
         currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
@@ -199,11 +228,12 @@
   function clearSpecialString() {
     currentCalculationStr = currentCalculationStr.slice(0, (currentCalculationStr.length - specialString.length));
     calculationField.value = currentCalculationStr;
+    specialString = '';
     isSpecialOperations = false;
   }
 
   function resetCalculation() {
-    currentCalculationStr = currentOperationStr = currentResult = lastOperationStr = '';
+    currentCalculationStr = currentOperationStr = currentResult = lastOperationStr = specialString = '';
     numberField.style.fontSize = '';
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     clearDisplay(calculationField);
@@ -217,6 +247,7 @@
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     currentResult = DEFAULT_CURRENT_NUMBER;
     isFloat = false;
+    isLastOperationPercent = false;
     isNewOperation = true;
   }
 
@@ -265,7 +296,7 @@
       var lastOperationArr = lastOperationStr.split(' ');
       lastOperationArr[0] = currentResult;
       lastOperationStr = lastOperationArr.join(' ');
-      currentResult = getArithmeticOperationResult(lastOperationStr);
+      currentResult = getOperationResult(lastOperationStr);
       replaceCurrentNumber(currentResult);
       isFloat = false;
       isNewOperation = true;
@@ -275,7 +306,7 @@
       } else {
         currentOperationStr += currentNumber;
       }
-      currentResult = getArithmeticOperationResult(currentOperationStr);
+      currentResult = getOperationResult(currentOperationStr);
       replaceCurrentNumber(currentResult);
       clearDisplay(calculationField);
       lastOperationStr = currentOperationStr;
@@ -296,9 +327,6 @@
       }
       if (isNewOperation) {
         if (pressedButtonValue === 0) {
-          if (isSpecialOperations) {
-            clearSpecialString();
-          }
           replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
           currentResult = currentNumber;
           return;
@@ -307,6 +335,9 @@
           currentNumber = '';
           isNewOperation = false;
         }
+      }
+      if (isSpecialOperations) {
+        clearSpecialString();
       }
       changeCurrentNumber(pressedButtonValue);
       if (isResultReceived) {
