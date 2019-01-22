@@ -101,7 +101,7 @@
     isSpecialOperations = true;
 
     if (specialOpertaion === 'percent') {
-      currentResult = getPerсent(operationNumber, SPECIAL_SIGN);
+      currentResult = getPerсent(operationNumber);
       isLastOperationPercent = true;
     } else if (specialOpertaion === 'square') {
       currentResult = getSquare(operationNumber);
@@ -113,8 +113,11 @@
 
     if (!isLastOperationPercent) {
       changeCurrentCalculationStrBySpecial(operationNumber, SPECIAL_SIGN);
+    } else {
+      changeCurrentCalculationStrByPercent(currentResult);
     }
     replaceCurrentNumber(currentResult);
+    // resetSpecialString();
     isLastOperationArithmetic = false;
     isNewOperation = true;
   }
@@ -126,15 +129,12 @@
       return 0;
     }
     if (isLastOperationPercent) {
-      clearSpecialString();
+      clearSpecialStringFromCalculation();
     }
     var operationArr = currentOperationStr.split(' ');
     operationArr[2] = operationNumber;
     var operationStr = operationArr[0] / 100 * operationArr[2];
     var result = getOperationResult(operationStr);
-    specialString += result;
-    currentCalculationStr += specialString;
-    calculationField.value = currentCalculationStr;
     return result;
   }
 
@@ -160,8 +160,15 @@
     currentCalculationStr += number + ArithmeticSigns[sign];
     calculationField.value = currentCalculationStr;
   }
+
   function changeCurrentCalculationStrBySpecial(number, sign) {
     specialString = sign + '(' + number + ')';
+    currentCalculationStr += specialString;
+    calculationField.value = currentCalculationStr;
+  }
+
+  function changeCurrentCalculationStrByPercent(number) {
+    specialString += number;
     currentCalculationStr += specialString;
     calculationField.value = currentCalculationStr;
   }
@@ -225,10 +232,14 @@
     isSpecialOperations = false;
   }
 
-  function clearSpecialString() {
+  function resetSpecialString() {
+    specialString = '';
+  }
+
+  function clearSpecialStringFromCalculation() {
     currentCalculationStr = currentCalculationStr.slice(0, (currentCalculationStr.length - specialString.length));
     calculationField.value = currentCalculationStr;
-    specialString = '';
+    resetSpecialString();
     isSpecialOperations = false;
   }
 
@@ -242,7 +253,7 @@
 
   function clearCurrentNumber() {
     if (isSpecialOperations) {
-      clearSpecialString();
+      clearSpecialStringFromCalculation();
     }
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     currentResult = DEFAULT_CURRENT_NUMBER;
@@ -281,7 +292,7 @@
         replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
       }
       if (isSpecialOperations) {
-        clearSpecialString();
+        clearSpecialStringFromCalculation();
       }
       changeCurrentNumber(FLOAT_SIGN);
       isFloat = true;
@@ -337,7 +348,7 @@
         }
       }
       if (isSpecialOperations) {
-        clearSpecialString();
+        clearSpecialStringFromCalculation();
       }
       changeCurrentNumber(pressedButtonValue);
       if (isResultReceived) {
