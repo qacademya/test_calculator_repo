@@ -37,6 +37,7 @@
   var currentOperationStr = '';
   var lastOperationStr = '';
   var currentResult = '';
+  var specialString = '';
 
   var operations = {
     arithmetic: performArithmeticOperation,
@@ -102,8 +103,8 @@
     } else if (specialOpertaion === 'fraction') {
       currentResult = getFraction(operationNumber);
     }
+    changeCurrentCalculationStrBySpecial(operationNumber, SPECIAL_SIGN);
     replaceCurrentNumber(currentResult);
-    changeCurrentCalculationStr(operationNumber, SPECIAL_SIGN)
     isLastOperationArithmetic = false;
     isNewOperation = true;
   }
@@ -126,13 +127,13 @@
     isNewOperation = true;
   }
 
-  function changeCurrentCalculationStr(number, sign) {
-    if (isSpecialOperations) {
-      currentCalculationStr += sign + '(' + number + ')';
-      isSpecialOperations = false;
-    } else {
-      currentCalculationStr += ArithmeticSigns[sign];
-    }
+  function changeCurrentCalculationStrByArithmetic(number, sign) {
+    currentCalculationStr += number + ArithmeticSigns[sign];
+    calculationField.value = currentCalculationStr;
+  }
+  function changeCurrentCalculationStrBySpecial(number, sign) {
+    specialString = sign + '(' + number + ')';
+    currentCalculationStr += specialString;
     calculationField.value = currentCalculationStr;
   }
 
@@ -167,6 +168,7 @@
   }
 
   function performArithmeticOperation(arithmeticOperation) {
+    var NO_NUMBER = '';
     var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
 
     if (!isLastOperationArithmetic) {
@@ -180,15 +182,23 @@
         currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
       isResultReceived = false;
-      changeCurrentCalculationStr(currentNumber, currentArithmeticSign);
+      if (isSpecialOperations) {
+        changeCurrentCalculationStrByArithmetic(NO_NUMBER, currentArithmeticSign);
+      } else {
+        changeCurrentCalculationStrByArithmetic(currentNumber, currentArithmeticSign);
+      }
       setNextCalculationStep();
     } else {
       changeNextArithmeticOperation(currentArithmeticSign);
     }
 
-    if (isFirstOperation) {
-      isFirstOperation = false;
-    }
+    isFirstOperation = false;
+    isSpecialOperations = false;
+  }
+
+  function clearSpecialString() {
+    currentCalculationStr = currentCalculationStr.slice(0, (currentCalculationStr.length - specialString.length));
+    calculationField.value = currentCalculationStr;
     isSpecialOperations = false;
   }
 
@@ -201,6 +211,9 @@
   }
 
   function clearCurrentNumber() {
+    if (isSpecialOperations) {
+      clearSpecialString();
+    }
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     currentResult = DEFAULT_CURRENT_NUMBER;
     isFloat = false;
@@ -235,6 +248,9 @@
     if (!isFloat) {
       if (isNewOperation) {
         replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+      }
+      if (isSpecialOperations) {
+        clearSpecialString();
       }
       changeCurrentNumber(FLOAT_SIGN);
       isFloat = true;
@@ -280,6 +296,9 @@
       }
       if (isNewOperation) {
         if (pressedButtonValue === 0) {
+          if (isSpecialOperations) {
+            clearSpecialString();
+          }
           replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
           currentResult = currentNumber;
           return;
