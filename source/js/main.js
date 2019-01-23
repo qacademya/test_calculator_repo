@@ -26,6 +26,7 @@
     FRACTION: '1/',
   };
 
+  var isBigNumber = false;
   var isFirstOperation = true;
   var isFloat = false;
   var isLastOperationArithmetic = false;
@@ -60,6 +61,7 @@
   };
 
   function setBooleansDefault() {
+    isBigNumber = false;
     isFirstOperation = true;
     isFloat = false;
     isLastOperationArithmetic = false;
@@ -90,12 +92,15 @@
   }
 
   function getPerсent(operationNumber) {
+    var MAX_PERCENT = 100;
+
     if (isFirstOperation) {
       return 0;
     }
+
     var operationArr = currentOperationStr.split(' ');
     operationArr[2] = operationNumber;
-    var operationStr = operationArr[0] / 100 * operationArr[2];
+    var operationStr = Number(operationArr[0]) / MAX_PERCENT * Number(operationArr[2]);
     var result = getOperationResult(operationStr);
     return result.toString();
   }
@@ -174,6 +179,7 @@
     }
 
     isFirstOperation = false;
+    isLastOperationPercent = false;
     isLastOperationSpecial = false;
   }
 
@@ -226,10 +232,6 @@
 
   function clearScreen(input) {
     input.value = '';
-  }
-
-  function changeScreenFontSize(fontSize) {
-    numberField.style.fontSize = fontSize;
   }
 
   function changeCurrentNumber(newValue) {
@@ -307,12 +309,18 @@
     var FLOAT_SIGN = '.';
 
     if (!isFloat) {
+      if (isCurrentNumberMoreMaxLength()) {
+        return;
+      }
+
       if (isNewOperation) {
         replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
       }
+
       if (isLastOperationSpecial) {
         clearSpecialStringFromCalculation();
       }
+
       changeCurrentNumber(FLOAT_SIGN);
       isFloat = true;
       isNewOperation = false;
@@ -358,6 +366,10 @@
 
       isLastOperationArithmetic = false;
 
+      if (isCurrentNumberMoreMaxLength()) {
+        return;
+      }
+
       if (isNewOperation) {
         if (pressedButtonValue === 0) {
           replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
@@ -375,11 +387,25 @@
         currentResult = currentNumber;
       }
     }
+    controlScreenFontSize();
+  }
 
-    if (numberField.value.length > NUMBER_MAX_LENGTH) {
+  function isCurrentNumberMoreMaxLength() {
+    return (numberField.value.length > NUMBER_MAX_LENGTH && !isNewOperation) ? true : false;
+  }
+
+  function changeScreenFontSize(fontSize) {
+    numberField.style.fontSize = fontSize;
+  }
+
+  function controlScreenFontSize() {
+    if (numberField.value.length > NUMBER_MAX_LENGTH + 1) {
       changeScreenFontSize(SMALLER_FONT_SIZE);
-    } else {
+      isBigNumber = true;
+    }
+    if (isBigNumber && numberField.value.length <= NUMBER_MAX_LENGTH - 1) {
       changeScreenFontSize(DEFAULT_FONT_SIZE);
+      isBigNumber = false;
     }
   }
 
