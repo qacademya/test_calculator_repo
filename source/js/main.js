@@ -20,7 +20,6 @@
   };
 
   var SpecialSigns = {
-    PERCENT: '%',
     SQUARE: 'sqr',
     ROOT: '√',
     FRACTION: '1/',
@@ -382,9 +381,9 @@
 
   function onButtonClick(evt) {
     evt.preventDefault();
-    var target = evt.target;
+    var target = evt.target.closest('.button');
 
-    if (target.tagName !== 'BUTTON') {
+    if (target === null) {
       return;
     }
 
