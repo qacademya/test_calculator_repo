@@ -1,5 +1,5 @@
 .calculator__container {
-	width: 300px;
+	width: 350px;
 	margin: 0 auto;
 	padding: 0 10px;
 	box-sizing: border-box;
@@ -42,6 +42,7 @@
 	}
 
 	&--number {
+    min-height: 50px;
 		font-size: 35px;
 		line-height: 45px;
 	}
