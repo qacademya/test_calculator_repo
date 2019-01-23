@@ -6,6 +6,7 @@
   var DEFAULT_FONT_SIZE;
   var SMALLER_FONT_SIZE;
   var FONT_SIZE_STEP = 10;
+  var NUMBER_MAX_LENGTH = 15;
 
   var calculator = document.querySelector('.calculator');
   var buttons = calculator.querySelector('.buttons');
@@ -29,13 +30,12 @@
   var isFloat = false;
   var isLastOperationArithmetic = false;
   var isLastOperationPercent = false;
+  var isLastOperationSpecial = false;
   var isNewOperation = true;
   var isResultReceived = false;
-  var isSpecialOperations = false;
 
   var currentNumber = DEFAULT_CURRENT_NUMBER;
-  var currentCalculationStr = '';
-  var currentCalculationStrArr = [];
+  var calculationStringElementsArr = [];
   var currentOperationStr = '';
   var lastOperationStr = '';
   var currentResult = '';
@@ -66,14 +66,14 @@
     isLastOperationPercent = false;
     isNewOperation = true;
     isResultReceived = false;
-    isSpecialOperations = false;
+    isLastOperationSpecial = false;
   }
 
-  function getDisplayDefaultFontSize() {
+  function getScreenDefaultFontSize() {
     return window.getComputedStyle(numberField, null).getPropertyValue('font-size');
   }
 
-  function getDisplaySmallerFontSize() {
+  function getScreenSmallerFontSize() {
     return (parseInt(DEFAULT_FONT_SIZE, 10) - FONT_SIZE_STEP) + 'px';
   }
 
@@ -81,48 +81,12 @@
     operations.arithmetic(currentArithmeticOperationBtnPressed);
   }
 
-  function getOperationResult(operationStr) {
-    return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
-  }
-
   function getSpecialOperation(currentSpecialOperationBtnPressed) {
     operations.special(currentSpecialOperationBtnPressed);
   }
 
-  function performSpecialOpertaion(specialOpertaion) {
-    var SPECIAL_SIGN = SpecialSigns[specialOpertaion.toUpperCase()];
-    var operationNumber;
-    if (isLastOperationArithmetic) {
-      operationNumber = currentResult;
-    } else {
-      operationNumber = currentNumber;
-    }
-
-    if (isSpecialOperations) {
-      clearSpecialStringFromCalculation();
-    }
-
-    isSpecialOperations = true;
-
-    if (specialOpertaion === 'percent') {
-      currentResult = getPerсent(operationNumber);
-      isLastOperationPercent = true;
-    } else if (specialOpertaion === 'square') {
-      currentResult = getSquare(operationNumber);
-    } else if (specialOpertaion === 'root') {
-      currentResult = getRoot(operationNumber);
-    } else if (specialOpertaion === 'fraction') {
-      currentResult = getFraction(operationNumber);
-    }
-
-    if (!isLastOperationPercent) {
-      changeCurrentCalculationStrBySpecial(operationNumber, SPECIAL_SIGN);
-    } else {
-      changeCurrentCalculationStrByPercent(currentResult);
-    }
-    replaceCurrentNumber(currentResult);
-    isLastOperationArithmetic = false;
-    isNewOperation = true;
+  function getOperationResult(operationStr) {
+    return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
   }
 
   function getPerсent(operationNumber) {
@@ -148,76 +112,44 @@
     return Number(1 / (Number(operationNumber)).toFixed(FLOAT_PRECISION));
   }
 
-  function setNextCalculationStep() {
-    isFloat = false;
-    isLastOperationArithmetic = true;
-    isNewOperation = true;
-  }
-
-  function changeCurrentCalculationStrByArithmetic(number, sign) {
-    if (isSpecialOperations) {
-      currentCalculationStrArr.push(ArithmeticSigns[sign]);
+  function performSpecialOpertaion(specialOpertaion) {
+    var SPECIAL_SIGN = SpecialSigns[specialOpertaion.toUpperCase()];
+    var operationNumber;
+    if (isLastOperationArithmetic) {
+      operationNumber = currentResult;
     } else {
-      currentCalculationStrArr.push(number);
-      currentCalculationStrArr.push(ArithmeticSigns[sign]);
+      operationNumber = currentNumber;
     }
-    currentCalculationStr = currentCalculationStrArr.join('');
-    calculationField.value = currentCalculationStr;
-  }
 
-  function changeCurrentCalculationStrBySpecial(number, sign) {
-    specialString = sign + '(' + number + ')';
-    currentCalculationStrArr.push(specialString);
-    currentCalculationStr = currentCalculationStrArr.join('');
-    calculationField.value = currentCalculationStr;
-  }
+    if (isLastOperationSpecial) {
+      clearSpecialStringFromCalculation();
+    }
 
-  function changeCurrentCalculationStrByPercent(number) {
-    if (isFirstOperation) {
-      currentCalculationStrArr.push(0);
-      currentCalculationStr = currentCalculationStrArr.join('');
+    isLastOperationSpecial = true;
+
+    if (specialOpertaion === 'percent') {
+      currentResult = getPerсent(operationNumber);
+      isLastOperationPercent = true;
+    } else if (specialOpertaion === 'square') {
+      currentResult = getSquare(operationNumber);
+    } else if (specialOpertaion === 'root') {
+      currentResult = getRoot(operationNumber);
+    } else if (specialOpertaion === 'fraction') {
+      currentResult = getFraction(operationNumber);
+    }
+
+    if (!isLastOperationPercent) {
+      changeCalculationStrBySpecial(operationNumber, SPECIAL_SIGN);
     } else {
-      specialString = number;
-      currentCalculationStrArr.push(specialString);
-      currentCalculationStr = currentCalculationStrArr.join('');
+      changeCalculationStrByPercent(currentResult);
     }
-    calculationField.value = currentCalculationStr;
-  }
+    replaceCurrentNumber(currentResult);
 
-  function changeNextArithmeticOperation(lastArithmeticSign) {
-    currentCalculationStrArr.pop();
-    currentCalculationStrArr.push(ArithmeticSigns[lastArithmeticSign]);
-    currentCalculationStr = currentCalculationStrArr.join('');
-    currentOperationStr = currentOperationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
-    calculationField.value = currentCalculationStr;
-  }
-
-  function startNewOperationAfterTotalDeletion(modifiedNumber) {
-    modifiedNumber = DEFAULT_CURRENT_NUMBER;
-    replaceCurrentNumber(modifiedNumber);
+    isLastOperationArithmetic = false;
     isNewOperation = true;
-  }
-
-  function clearDisplay(input) {
-    input.value = '';
-  }
-
-  function changeDisplayFontSize(fontSize) {
-    numberField.style.fontSize = fontSize;
-  }
-
-  function changeCurrentNumber(newValue) {
-    currentNumber += newValue;
-    numberField.value = currentNumber;
-  }
-
-  function replaceCurrentNumber(newValue) {
-    currentNumber = '';
-    changeCurrentNumber(newValue);
   }
 
   function performArithmeticOperation(arithmeticOperation) {
-    var NO_NUMBER = '';
     var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
 
     if (!isLastOperationArithmetic) {
@@ -231,10 +163,10 @@
         currentOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
       isResultReceived = false;
-      if (isSpecialOperations) {
-        changeCurrentCalculationStrByArithmetic(NO_NUMBER, currentArithmeticSign);
+      if (isLastOperationSpecial) {
+        changeCalculationStrByArithmetic(currentArithmeticSign);
       } else {
-        changeCurrentCalculationStrByArithmetic(currentNumber, currentArithmeticSign);
+        changeCalculationStrByArithmetic(currentArithmeticSign, currentNumber);
       }
       setNextCalculationStep();
     } else {
@@ -242,7 +174,72 @@
     }
 
     isFirstOperation = false;
-    isSpecialOperations = false;
+    isLastOperationSpecial = false;
+  }
+
+  function setNextCalculationStep() {
+    isFloat = false;
+    isLastOperationArithmetic = true;
+    isNewOperation = true;
+  }
+
+  function createString(arr) {
+    return arr.join('');
+  }
+
+  function displayCalculationString() {
+    calculationField.value = createString(calculationStringElementsArr);
+  }
+
+  function changeCalculationStrByArithmetic(sign, number) {
+    if (isLastOperationSpecial) {
+      calculationStringElementsArr.push(ArithmeticSigns[sign]);
+    } else {
+      calculationStringElementsArr.push(Number(number));
+      calculationStringElementsArr.push(ArithmeticSigns[sign]);
+    }
+    displayCalculationString();
+  }
+
+  function changeCalculationStrBySpecial(number, sign) {
+    specialString = sign + '(' + Number(number) + ')';
+    calculationStringElementsArr.push(specialString);
+    displayCalculationString();
+  }
+
+  function changeCalculationStrByPercent(number) {
+    if (isFirstOperation) {
+      calculationStringElementsArr.push(0);
+    } else {
+      specialString = Number(number);
+      calculationStringElementsArr.push(specialString);
+    }
+    displayCalculationString();
+  }
+
+  function changeNextArithmeticOperation(lastArithmeticSign) {
+    calculationStringElementsArr.pop();
+    calculationStringElementsArr.push(ArithmeticSigns[lastArithmeticSign]);
+    currentOperationStr = currentOperationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
+    displayCalculationString();
+  }
+
+  function clearScreen(input) {
+    input.value = '';
+  }
+
+  function changeScreenFontSize(fontSize) {
+    numberField.style.fontSize = fontSize;
+  }
+
+  function changeCurrentNumber(newValue) {
+    currentNumber += newValue;
+    numberField.value = currentNumber;
+  }
+
+  function replaceCurrentNumber(newValue) {
+    currentNumber = '';
+    changeCurrentNumber(newValue);
   }
 
   function resetSpecialString() {
@@ -250,31 +247,35 @@
   }
 
   function clearSpecialStringFromCalculation() {
-    currentCalculationStrArr.pop();
-    currentCalculationStr = currentCalculationStrArr.join('');
-    calculationField.value = currentCalculationStr;
+    calculationStringElementsArr.pop();
+    displayCalculationString();
     resetSpecialString();
-    isSpecialOperations = false;
+    isLastOperationSpecial = false;
     isLastOperationPercent = false;
   }
 
   function resetCalculation() {
-    currentCalculationStr = currentOperationStr = currentResult = lastOperationStr = specialString = '';
-    currentCalculationStrArr = [];
+    currentOperationStr = currentResult = lastOperationStr = specialString = '';
+    calculationStringElementsArr = [];
     numberField.style.fontSize = '';
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
-    clearDisplay(calculationField);
+    clearScreen(calculationField);
     setBooleansDefault();
   }
 
   function clearCurrentNumber() {
-    if (isSpecialOperations) {
+    if (isLastOperationSpecial) {
       clearSpecialStringFromCalculation();
     }
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     currentResult = DEFAULT_CURRENT_NUMBER;
     isFloat = false;
-    isLastOperationPercent = false;
+    isNewOperation = true;
+  }
+
+  function startNewOperationAfterTotalDeletion(modifiedNumber) {
+    modifiedNumber = DEFAULT_CURRENT_NUMBER;
+    replaceCurrentNumber(modifiedNumber);
     isNewOperation = true;
   }
 
@@ -287,8 +288,10 @@
         if (currentNumberLastSimbol === '.') {
           isFloat = false;
         }
+
         modifiedByDeletionNumber = currentNumber.slice(0, -1);
         replaceCurrentNumber(modifiedByDeletionNumber);
+
         if (currentNumber === DEFAULT_CURRENT_NUMBER) {
           startNewOperationAfterTotalDeletion(modifiedByDeletionNumber);
         }
@@ -307,7 +310,7 @@
       if (isNewOperation) {
         replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
       }
-      if (isSpecialOperations) {
+      if (isLastOperationSpecial) {
         clearSpecialStringFromCalculation();
       }
       changeCurrentNumber(FLOAT_SIGN);
@@ -335,11 +338,10 @@
       }
       currentResult = getOperationResult(currentOperationStr);
       replaceCurrentNumber(currentResult);
-      clearDisplay(calculationField);
+      clearScreen(calculationField);
       lastOperationStr = currentOperationStr;
       currentOperationStr = '';
-      currentCalculationStr = '';
-      currentCalculationStrArr = [];
+      calculationStringElementsArr = [];
       setBooleansDefault();
       isResultReceived = true;
     }
@@ -350,32 +352,34 @@
     if (isNaN(pressedButtonValue)) {
       operations[pressedButton](pressedButton);
     } else {
-      if (isLastOperationArithmetic) {
-        isLastOperationArithmetic = false;
+      if (isLastOperationSpecial || isLastOperationPercent) {
+        clearSpecialStringFromCalculation();
       }
+
+      isLastOperationArithmetic = false;
+
       if (isNewOperation) {
         if (pressedButtonValue === 0) {
           replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
           currentResult = currentNumber;
           return;
         } else {
-          clearDisplay(numberField);
           currentNumber = '';
           isNewOperation = false;
         }
       }
-      if (isSpecialOperations || isLastOperationPercent) {
-        clearSpecialStringFromCalculation();
-      }
+
       changeCurrentNumber(pressedButtonValue);
+
       if (isResultReceived) {
         currentResult = currentNumber;
       }
     }
-    if (numberField.value.length > 15) {
-      changeDisplayFontSize(SMALLER_FONT_SIZE);
+
+    if (numberField.value.length > NUMBER_MAX_LENGTH) {
+      changeScreenFontSize(SMALLER_FONT_SIZE);
     } else {
-      changeDisplayFontSize(DEFAULT_FONT_SIZE);
+      changeScreenFontSize(DEFAULT_FONT_SIZE);
     }
   }
 
@@ -392,8 +396,8 @@
     changeCurrentCalculation(pressedButton);
   }
 
-  DEFAULT_FONT_SIZE = getDisplayDefaultFontSize();
-  SMALLER_FONT_SIZE = getDisplaySmallerFontSize();
-  clearDisplay(calculationField);
+  DEFAULT_FONT_SIZE = getScreenDefaultFontSize();
+  SMALLER_FONT_SIZE = getScreenSmallerFontSize();
+  clearScreen(calculationField);
   buttons.addEventListener('click', onButtonClick);
 })();
