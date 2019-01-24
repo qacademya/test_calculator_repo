@@ -257,9 +257,13 @@
   }
 
   function resetCalculation() {
-    currentArithmeticOperationStr = currentResult = lastArithmeticOperationStr = specialString = '';
+    currentArithmeticOperationStr = currentResult = specialString = '';
     calculationStringElementsArr = [];
-    numberField.style.fontSize = '';
+
+    if (isBigNumber) {
+      numberField.style.fontSize = '';
+    }
+
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     clearScreen(calculationField);
     setBooleansDefault();
@@ -314,6 +318,7 @@
           clearSpecialStringFromCalculation();
         }
         replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+        currentResult = currentNumber;
       } else {
         if (isCurrentNumberMoreMaxLength()) {
           return;
@@ -350,14 +355,12 @@
     } else {
       currentArithmeticOperationStr += currentNumber;
     }
+    lastArithmeticOperationStr = currentArithmeticOperationStr;
     currentResult = getOperationResult(currentArithmeticOperationStr);
     replaceCurrentNumber(currentResult);
     clearScreen(calculationField);
-    lastArithmeticOperationStr = currentArithmeticOperationStr;
     currentArithmeticOperationStr = '';
     calculationStringElementsArr = [];
-    setBooleansDefault();
-    isResultReceived = true;
   }
 
   function getCalculationResult() {
@@ -365,6 +368,8 @@
       repeatLastArithmeticOperation();
     } else {
       getCurrentArithmeticOperationResult();
+      setBooleansDefault();
+      isResultReceived = true;
     }
   }
 
