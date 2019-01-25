@@ -2,13 +2,13 @@
 
 (function () {
   var DEFAULT_CURRENT_NUMBER = '0';
-  var FLOAT_PRECISION = 11;
+  // var FLOAT_PRECISION = 11;
   var DEFAULT_FONT_SIZE;
   var SMALLER_FONT_SIZE;
   var FONT_SIZE_STEP = 10;
   var NUMBER_MAX_LENGTH = 15;
 
-  var calculator = document.querySelector('.calculator');
+  var calculator = window.data.calculator;
   var buttons = calculator.querySelector('.buttons');
   var calculationField = calculator.querySelector('#screen_calculation');
   var numberField = calculator.querySelector('#screen_number');
@@ -26,18 +26,9 @@
     FRACTION: '1/',
   };
 
-  var isBigNumber = false;
-  var isFirstOperation = true;
-  var isFloat = false;
-  var isLastOperationArithmetic = false;
-  var isLastOperationPercent = false;
-  var isLastOperationMath = false;
-  var isNewStep = true;
-  var isResultReceived = false;
-
   var currentNumber = DEFAULT_CURRENT_NUMBER;
   var calculationStringElementsArr = [];
-  var currentArithmeticOperationStr = '';
+  // var currentArithmeticOperationStr = '';
   var lastArithmeticOperationStr = '';
   var currentResult = '';
   var specialString = '';
@@ -60,21 +51,6 @@
     result: getCalculationResult,
   };
 
-  function setBooleansDefault() {
-    isBigNumber = false;
-    isFirstOperation = true;
-    isFloat = false;
-    isLastOperationArithmetic = false;
-    isLastOperationPercent = false;
-    isNewStep = true;
-    isResultReceived = false;
-    isLastOperationMath = false;
-  }
-
-  function clearScreen(input) {
-    input.value = '';
-  }
-
   function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
     mainOperations.arithmetic(currentArithmeticOperationBtnPressed);
   }
@@ -83,90 +59,48 @@
     mainOperations.math(currentMathOperationBtnPressed);
   }
 
-  function getOperationResult(operationStr) {
-    return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
-  }
-
-  function getPerсent(percentNumber) {
-    var MAX_PERCENT = 100;
-
-    if (isFirstOperation) {
-      return 0;
-    }
-
-    var operationArr = currentArithmeticOperationStr.split(' ');
-    operationArr[2] = percentNumber;
-    return Number(operationArr[0]) / MAX_PERCENT * Number(operationArr[2]);
-  }
-
-  function getSquare(operationNumber) {
-    return Number((Number(operationNumber) * Number(operationNumber)).toFixed(FLOAT_PRECISION));
-  }
-
-  function getRoot(operationNumber) {
-    return Number((Math.sqrt(Number(operationNumber))).toFixed(FLOAT_PRECISION));
-  }
-
-  function getFraction(operationNumber) {
-    return Number(1 / (Number(operationNumber)).toFixed(FLOAT_PRECISION));
-  }
-
-  function getMathOperationResult(mathOpertaion, operationNumber) {
-    switch (mathOpertaion) {
-      case 'percent':
-        isLastOperationPercent = true;
-        return getPerсent(operationNumber);
-      case 'square':
-        return getSquare(operationNumber);
-      case 'root':
-        return getRoot(operationNumber);
-      case 'fraction':
-        return getFraction(operationNumber);
-    }
-  }
-
   function performMathOpertaion(mathOpertaion) {
     var MATH_SIGN = MathSigns[mathOpertaion.toUpperCase()];
     var operationNumber;
 
-    if (isLastOperationArithmetic) {
+    if (window.data.isLastOperationArithmetic) {
       operationNumber = currentResult;
     } else {
       operationNumber = currentNumber;
     }
 
-    if (isLastOperationMath) {
+    if (window.data.isLastOperationMath) {
       clearSpecialStringFromCalculation();
     }
 
-    isLastOperationMath = true;
+    window.data.isLastOperationMath = true;
 
-    currentResult = getMathOperationResult(mathOpertaion, operationNumber);
+    currentResult = window.mathOperations.getMathOperationResult(mathOpertaion, operationNumber);
     changeCalculationStrByMath(operationNumber, MATH_SIGN);
     replaceCurrentNumber(currentResult);
 
-    isLastOperationArithmetic = false;
-    isNewStep = true;
+    window.data.isLastOperationArithmetic = false;
+    window.data.isNewStep = true;
   }
 
   function getArithmeticOperationResult(operationStr) {
-    currentResult = getOperationResult(operationStr);
+    currentResult = window.utils.getOperationResult(operationStr);
     replaceCurrentNumber(currentResult);
   }
 
   function performArithmeticOperation(arithmeticOperation) {
     var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
 
-    if (!isLastOperationArithmetic) {
-      if (isFirstOperation) {
+    if (!window.data.isLastOperationArithmetic) {
+      if (window.data.isFirstOperation) {
         changeCalculationStrByArithmetic(currentArithmeticSign, currentNumber);
-        currentArithmeticOperationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
+        window.data.currentArithmeticOperationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
         currentResult = currentNumber;
       } else {
         changeCalculationStrByArithmetic(currentArithmeticSign, currentNumber);
-        currentArithmeticOperationStr += currentNumber;
-        getArithmeticOperationResult(currentArithmeticOperationStr);
-        currentArithmeticOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
+        window.data.currentArithmeticOperationStr += currentNumber;
+        getArithmeticOperationResult(window.data.currentArithmeticOperationStr);
+        window.data.currentArithmeticOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
 
       setNextCalculationStep();
@@ -176,21 +110,17 @@
   }
 
   function setNextCalculationStep() {
-    isFirstOperation = false;
-    isFloat = false;
-    isLastOperationArithmetic = true;
-    isLastOperationMath = false;
-    isLastOperationPercent = false;
-    isNewStep = true;
-    isResultReceived = false;
-  }
-
-  function createString(arr, isWithSpace) {
-    return (isWithSpace) ? arr.join(' ') : arr.join('');
+    window.data.isFirstOperation = false;
+    window.data.isFloat = false;
+    window.data.isLastOperationArithmetic = true;
+    window.data.isLastOperationMath = false;
+    window.data.isLastOperationPercent = false;
+    window.data.isNewStep = true;
+    window.data.isResultReceived = false;
   }
 
   function displayNewCalculationString() {
-    calculationField.value = createString(calculationStringElementsArr);
+    calculationField.value = window.utils.createString(calculationStringElementsArr);
   }
 
   function addElementForCalculationString(element) {
@@ -198,7 +128,7 @@
   }
 
   function changeCalculationStrByArithmetic(sign, number) {
-    if (isLastOperationMath) {
+    if (window.data.isLastOperationMath) {
       addElementForCalculationString(ArithmeticSigns[sign]);
     } else {
       addElementForCalculationString(Number(number));
@@ -208,11 +138,11 @@
   }
 
   function changeCalculationStrByMath(number, sign) {
-    if (isLastOperationPercent) {
-      if (isFirstOperation) {
+    if (window.data.isLastOperationPercent) {
+      if (window.data.isFirstOperation) {
         specialString = '0';
       } else {
-        specialString = Number(number).toString();
+        specialString = Number(currentResult).toString();
       }
     } else {
       specialString = sign + '(' + Number(number) + ')';
@@ -224,7 +154,7 @@
   function changeNextArithmeticOperation(lastArithmeticSign) {
     calculationStringElementsArr.pop();
     calculationStringElementsArr.push(ArithmeticSigns[lastArithmeticSign]);
-    currentArithmeticOperationStr = currentArithmeticOperationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
+    window.data.currentArithmeticOperationStr = window.data.currentArithmeticOperationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
     displayNewCalculationString();
   }
 
@@ -246,47 +176,47 @@
     calculationStringElementsArr.pop();
     displayNewCalculationString();
     resetSpecialString();
-    isLastOperationMath = false;
-    isLastOperationPercent = false;
+    window.data.isLastOperationMath = false;
+    window.data.isLastOperationPercent = false;
   }
 
   function resetCalculation() {
-    currentArithmeticOperationStr = currentResult = specialString = '';
+    window.data.currentArithmeticOperationStr = currentResult = specialString = '';
     calculationStringElementsArr = [];
 
-    if (isBigNumber) {
+    if (window.data.isBigNumber) {
       numberField.style.fontSize = '';
     }
 
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
-    clearScreen(calculationField);
-    setBooleansDefault();
+    window.utils.clearScreen(calculationField);
+    window.utils.setBooleansDefault();
   }
 
   function clearCurrentNumber() {
-    if (isLastOperationMath) {
+    if (window.data.isLastOperationMath) {
       clearSpecialStringFromCalculation();
     }
     replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     currentResult = DEFAULT_CURRENT_NUMBER;
-    isFloat = false;
-    isNewStep = true;
+    window.data.isFloat = false;
+    window.data.isNewStep = true;
   }
 
   function startNewOperationAfterTotalDeletion(modifiedNumber) {
     modifiedNumber = DEFAULT_CURRENT_NUMBER;
     replaceCurrentNumber(modifiedNumber);
-    isNewStep = true;
+    window.data.isNewStep = true;
   }
 
   function deleteCurrentNumberSimbol() {
     var modifiedByDeletionNumber;
     var currentNumberLastSimbol = currentNumber[currentNumber.length - 1];
 
-    if (!isNewStep) {
+    if (!window.data.isNewStep) {
       if (currentNumber.length > 1) {
         if (currentNumberLastSimbol === '.') {
-          isFloat = false;
+          window.data.isFloat = false;
         }
 
         modifiedByDeletionNumber = currentNumber.slice(0, -1);
@@ -306,9 +236,9 @@
   function setFloatingPointNumber() {
     var FLOAT_SIGN = '.';
 
-    if (!isFloat) {
-      if (isNewStep) {
-        if (isLastOperationMath) {
+    if (!window.data.isFloat) {
+      if (window.data.isNewStep) {
+        if (window.data.isLastOperationMath) {
           clearSpecialStringFromCalculation();
         }
         replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
@@ -321,9 +251,9 @@
 
       changeCurrentNumber(FLOAT_SIGN);
 
-      isFloat = true;
-      isLastOperationArithmetic = false;
-      isNewStep = false;
+      window.data.isFloat = true;
+      window.data.isLastOperationArithmetic = false;
+      window.data.isNewStep = false;
     } else {
       return;
     }
@@ -333,36 +263,36 @@
     var isWithSpace = true;
     var lastOperationArr = lastArithmeticOperationStr.split(' ');
     lastOperationArr[0] = currentResult;
-    lastArithmeticOperationStr = createString(lastOperationArr, isWithSpace);
+    lastArithmeticOperationStr = window.utils.createString(lastOperationArr, isWithSpace);
     return lastArithmeticOperationStr;
   }
 
   function repeatLastArithmeticOperation() {
     getArithmeticOperationResult(getOperationStringForRepeating());
-    isFloat = false;
-    isNewStep = true;
+    window.data.isFloat = false;
+    window.data.isNewStep = true;
   }
 
   function getCurrentArithmeticOperationResult() {
-    if (isLastOperationArithmetic) {
-      currentArithmeticOperationStr += currentResult;
+    if (window.data.isLastOperationArithmetic) {
+      window.data.currentArithmeticOperationStr += currentResult;
     } else {
-      currentArithmeticOperationStr += currentNumber;
+      window.data.currentArithmeticOperationStr += currentNumber;
     }
-    lastArithmeticOperationStr = currentArithmeticOperationStr;
-    getArithmeticOperationResult(currentArithmeticOperationStr);
-    clearScreen(calculationField);
-    currentArithmeticOperationStr = '';
+    lastArithmeticOperationStr = window.data.currentArithmeticOperationStr;
+    getArithmeticOperationResult(window.data.currentArithmeticOperationStr);
+    window.utils.clearScreen(calculationField);
+    window.data.currentArithmeticOperationStr = '';
     calculationStringElementsArr = [];
   }
 
   function getCalculationResult() {
-    if (isResultReceived) {
+    if (window.data.isResultReceived) {
       repeatLastArithmeticOperation();
     } else {
       getCurrentArithmeticOperationResult();
-      setBooleansDefault();
-      isResultReceived = true;
+      window.utils.setBooleansDefault();
+      window.data.isResultReceived = true;
     }
   }
 
@@ -371,30 +301,30 @@
   }
 
   function performNumberOperation(pressedButtonValue) {
-    if (isLastOperationMath || isLastOperationPercent) {
+    if (window.data.isLastOperationMath || window.data.isLastOperationPercent) {
       clearSpecialStringFromCalculation();
     }
 
-    isLastOperationArithmetic = false;
+    window.data.isLastOperationArithmetic = false;
 
     if (isCurrentNumberMoreMaxLength()) {
       return;
     }
 
-    if (isNewStep) {
+    if (window.data.isNewStep) {
       if (Number(pressedButtonValue) === 0) {
         replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
         currentResult = currentNumber;
         return;
       } else {
         currentNumber = '';
-        isNewStep = false;
+        window.data.isNewStep = false;
       }
     }
 
     changeCurrentNumber(pressedButtonValue);
 
-    if (isResultReceived) {
+    if (window.data.isResultReceived) {
       currentResult = currentNumber;
     }
   }
@@ -413,7 +343,7 @@
   }
 
   function isCurrentNumberMoreMaxLength() {
-    return (numberField.value.length > NUMBER_MAX_LENGTH && !isNewStep) ? true : false;
+    return (numberField.value.length > NUMBER_MAX_LENGTH && !window.data.isNewStep) ? true : false;
   }
 
   function changeScreenFontSize(fontSize) {
@@ -423,11 +353,11 @@
   function controlScreenFontSize() {
     if (numberField.value.length > NUMBER_MAX_LENGTH + 1) {
       changeScreenFontSize(SMALLER_FONT_SIZE);
-      isBigNumber = true;
+      window.data.isBigNumber = true;
     }
-    if (isBigNumber && numberField.value.length <= NUMBER_MAX_LENGTH - 1) {
+    if (window.data.isBigNumber && numberField.value.length <= NUMBER_MAX_LENGTH - 1) {
       changeScreenFontSize(DEFAULT_FONT_SIZE);
-      isBigNumber = false;
+      window.data.isBigNumber = false;
     }
   }
 
@@ -454,6 +384,6 @@
 
   DEFAULT_FONT_SIZE = getScreenDefaultFontSize();
   SMALLER_FONT_SIZE = getScreenSmallerFontSize();
-  clearScreen(calculationField);
+  window.utils.clearScreen(calculationField);
   buttons.addEventListener('click', onButtonClick);
 })();
