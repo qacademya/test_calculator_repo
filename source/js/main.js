@@ -71,6 +71,10 @@
     isLastOperationMath = false;
   }
 
+  function clearScreen(input) {
+    input.value = '';
+  }
+
   function getScreenDefaultFontSize() {
     return window.getComputedStyle(numberField, null).getPropertyValue('font-size');
   }
@@ -144,7 +148,7 @@
     }
 
     if (!isLastOperationPercent) {
-      changeCalculationStrBySpecial(operationNumber, MATH_SIGN);
+      changeCalculationStrByMath(operationNumber, MATH_SIGN);
     } else {
       changeCalculationStrByPercent(currentResult);
     }
@@ -154,25 +158,28 @@
     isNewStep = true;
   }
 
+  // function getIntermediateCalculationResult() {
+  //   currentResult = getOperationResult(currentArithmeticOperationStr);
+  //   numberField.value = currentResult;
+  // }
+
   function performArithmeticOperation(arithmeticOperation) {
     var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
 
     if (!isLastOperationArithmetic) {
       if (isFirstOperation) {
+        changeCalculationStrByArithmetic(currentArithmeticSign, currentNumber);
         currentArithmeticOperationStr += currentNumber + ArithmeticSigns[currentArithmeticSign];
         currentResult = currentNumber;
       } else {
+        changeCalculationStrByArithmetic(currentArithmeticSign, currentNumber);
         currentArithmeticOperationStr += currentNumber;
         currentResult = getOperationResult(currentArithmeticOperationStr);
-        numberField.value = currentResult;
+        replaceCurrentNumber(currentResult);
         currentArithmeticOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
+
       isResultReceived = false;
-      if (isLastOperationMath) {
-        changeCalculationStrByArithmetic(currentArithmeticSign);
-      } else {
-        changeCalculationStrByArithmetic(currentArithmeticSign, currentNumber);
-      }
       setNextCalculationStep();
     } else {
       changeNextArithmeticOperation(currentArithmeticSign);
@@ -193,45 +200,45 @@
     return (isWithSpace) ? arr.join(' ') : arr.join('');
   }
 
-  function displayCalculationString() {
+  function displayNewCalculationString() {
     calculationField.value = createString(calculationStringElementsArr);
+  }
+
+  function addElementForCalculationString(element) {
+    calculationStringElementsArr.push(element);
   }
 
   function changeCalculationStrByArithmetic(sign, number) {
     if (isLastOperationMath) {
-      calculationStringElementsArr.push(ArithmeticSigns[sign]);
+      addElementForCalculationString(ArithmeticSigns[sign]);
     } else {
-      calculationStringElementsArr.push(Number(number));
-      calculationStringElementsArr.push(ArithmeticSigns[sign]);
+      addElementForCalculationString(Number(number));
+      addElementForCalculationString(ArithmeticSigns[sign]);
     }
-    displayCalculationString();
+    displayNewCalculationString();
   }
 
-  function changeCalculationStrBySpecial(number, sign) {
+  function changeCalculationStrByMath(number, sign) {
     specialString = sign + '(' + Number(number) + ')';
-    calculationStringElementsArr.push(specialString);
-    displayCalculationString();
+    addElementForCalculationString(specialString);
+    displayNewCalculationString();
   }
 
   function changeCalculationStrByPercent(number) {
     if (isFirstOperation) {
-      calculationStringElementsArr.push(0);
+      addElementForCalculationString(0);
     } else {
       specialString = Number(number);
-      calculationStringElementsArr.push(specialString);
+      addElementForCalculationString(specialString);
     }
-    displayCalculationString();
+    displayNewCalculationString();
   }
 
   function changeNextArithmeticOperation(lastArithmeticSign) {
     calculationStringElementsArr.pop();
     calculationStringElementsArr.push(ArithmeticSigns[lastArithmeticSign]);
     currentArithmeticOperationStr = currentArithmeticOperationStr.slice(0, -3) + ArithmeticSigns[lastArithmeticSign];
-    displayCalculationString();
-  }
-
-  function clearScreen(input) {
-    input.value = '';
+    displayNewCalculationString();
   }
 
   function changeCurrentNumber(newValue) {
@@ -250,7 +257,7 @@
 
   function clearSpecialStringFromCalculation() {
     calculationStringElementsArr.pop();
-    displayCalculationString();
+    displayNewCalculationString();
     resetSpecialString();
     isLastOperationMath = false;
     isLastOperationPercent = false;
@@ -328,6 +335,7 @@
       changeCurrentNumber(FLOAT_SIGN);
 
       isFloat = true;
+      isLastOperationArithmetic = false;
       isNewStep = false;
     } else {
       return;
