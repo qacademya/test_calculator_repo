@@ -75,14 +75,6 @@
     input.value = '';
   }
 
-  function getScreenDefaultFontSize() {
-    return window.getComputedStyle(numberField, null).getPropertyValue('font-size');
-  }
-
-  function getScreenSmallerFontSize() {
-    return (parseInt(DEFAULT_FONT_SIZE, 10) - FONT_SIZE_STEP) + 'px';
-  }
-
   function getArithmeticOperation(currentArithmeticOperationBtnPressed) {
     mainOperations.arithmetic(currentArithmeticOperationBtnPressed);
   }
@@ -119,6 +111,20 @@
     return Number(1 / (Number(operationNumber)).toFixed(FLOAT_PRECISION));
   }
 
+  function getMathOperationResult(mathOpertaion, operationNumber) {
+    switch (mathOpertaion) {
+      case 'percent':
+        isLastOperationPercent = true;
+        return getPerсent(operationNumber);
+      case 'square':
+        return getSquare(operationNumber);
+      case 'root':
+        return getRoot(operationNumber);
+      case 'fraction':
+        return getFraction(operationNumber);
+    }
+  }
+
   function performMathOpertaion(mathOpertaion) {
     var MATH_SIGN = MathSigns[mathOpertaion.toUpperCase()];
     var operationNumber;
@@ -135,23 +141,8 @@
 
     isLastOperationMath = true;
 
-    if (mathOpertaion === 'percent') {
-      currentResult = getPerсent(operationNumber);
-      isLastOperationPercent = true;
-    } else if (mathOpertaion === 'square') {
-      currentResult = getSquare(operationNumber);
-    } else if (mathOpertaion === 'root') {
-      currentResult = getRoot(operationNumber);
-    } else if (mathOpertaion === 'fraction') {
-      currentResult = getFraction(operationNumber);
-    }
-
-    if (!isLastOperationPercent) {
-      changeCalculationStrByMath(operationNumber, MATH_SIGN);
-    } else {
-      changeCalculationStrByPercent(currentResult);
-    }
-
+    currentResult = getMathOperationResult(mathOpertaion, operationNumber);
+    changeCalculationStrByMath(operationNumber, MATH_SIGN);
     replaceCurrentNumber(currentResult);
 
     isLastOperationArithmetic = false;
@@ -217,18 +208,16 @@
   }
 
   function changeCalculationStrByMath(number, sign) {
-    specialString = sign + '(' + Number(number) + ')';
-    addElementForCalculationString(specialString);
-    displayNewCalculationString();
-  }
-
-  function changeCalculationStrByPercent(number) {
-    if (isFirstOperation) {
-      addElementForCalculationString(0);
+    if (isLastOperationPercent) {
+      if (isFirstOperation) {
+        specialString = '0';
+      } else {
+        specialString = Number(number).toString();
+      }
     } else {
-      specialString = Number(number);
-      addElementForCalculationString(specialString);
+      specialString = sign + '(' + Number(number) + ')';
     }
+    addElementForCalculationString(specialString);
     displayNewCalculationString();
   }
 
@@ -453,6 +442,14 @@
     var pressedButton = target.dataset.type;
 
     getAction(pressedButton);
+  }
+
+  function getScreenDefaultFontSize() {
+    return window.getComputedStyle(numberField, null).getPropertyValue('font-size');
+  }
+
+  function getScreenSmallerFontSize() {
+    return (parseInt(DEFAULT_FONT_SIZE, 10) - FONT_SIZE_STEP) + 'px';
   }
 
   DEFAULT_FONT_SIZE = getScreenDefaultFontSize();
