@@ -95,7 +95,7 @@
     return Number(eval(operationStr).toFixed(FLOAT_PRECISION));
   }
 
-  function getPerсent(operationNumber) {
+  function getPerсent(percentNumber) {
     var MAX_PERCENT = 100;
 
     if (isFirstOperation) {
@@ -103,10 +103,8 @@
     }
 
     var operationArr = currentArithmeticOperationStr.split(' ');
-    operationArr[2] = operationNumber;
-    var operationStr = Number(operationArr[0]) / MAX_PERCENT * Number(operationArr[2]);
-    var result = getOperationResult(operationStr);
-    return result.toString();
+    operationArr[2] = percentNumber;
+    return Number(operationArr[0]) / MAX_PERCENT * Number(operationArr[2]);
   }
 
   function getSquare(operationNumber) {
@@ -124,6 +122,7 @@
   function performMathOpertaion(mathOpertaion) {
     var MATH_SIGN = MathSigns[mathOpertaion.toUpperCase()];
     var operationNumber;
+
     if (isLastOperationArithmetic) {
       operationNumber = currentResult;
     } else {
@@ -152,16 +151,17 @@
     } else {
       changeCalculationStrByPercent(currentResult);
     }
+
     replaceCurrentNumber(currentResult);
 
     isLastOperationArithmetic = false;
     isNewStep = true;
   }
 
-  // function getIntermediateCalculationResult() {
-  //   currentResult = getOperationResult(currentArithmeticOperationStr);
-  //   numberField.value = currentResult;
-  // }
+  function getArithmeticOperationResult(operationStr) {
+    currentResult = getOperationResult(operationStr);
+    replaceCurrentNumber(currentResult);
+  }
 
   function performArithmeticOperation(arithmeticOperation) {
     var currentArithmeticSign = arithmeticOperation.toUpperCase() + '_SIGN';
@@ -174,26 +174,24 @@
       } else {
         changeCalculationStrByArithmetic(currentArithmeticSign, currentNumber);
         currentArithmeticOperationStr += currentNumber;
-        currentResult = getOperationResult(currentArithmeticOperationStr);
-        replaceCurrentNumber(currentResult);
+        getArithmeticOperationResult(currentArithmeticOperationStr);
         currentArithmeticOperationStr = currentResult + ArithmeticSigns[currentArithmeticSign];
       }
 
-      isResultReceived = false;
       setNextCalculationStep();
     } else {
       changeNextArithmeticOperation(currentArithmeticSign);
     }
-
-    isFirstOperation = false;
-    isLastOperationPercent = false;
-    isLastOperationMath = false;
   }
 
   function setNextCalculationStep() {
+    isFirstOperation = false;
     isFloat = false;
     isLastOperationArithmetic = true;
+    isLastOperationMath = false;
+    isLastOperationPercent = false;
     isNewStep = true;
+    isResultReceived = false;
   }
 
   function createString(arr, isWithSpace) {
@@ -351,8 +349,7 @@
   }
 
   function repeatLastArithmeticOperation() {
-    currentResult = getOperationResult(getOperationStringForRepeating());
-    replaceCurrentNumber(currentResult);
+    getArithmeticOperationResult(getOperationStringForRepeating());
     isFloat = false;
     isNewStep = true;
   }
@@ -364,8 +361,7 @@
       currentArithmeticOperationStr += currentNumber;
     }
     lastArithmeticOperationStr = currentArithmeticOperationStr;
-    currentResult = getOperationResult(currentArithmeticOperationStr);
-    replaceCurrentNumber(currentResult);
+    getArithmeticOperationResult(currentArithmeticOperationStr);
     clearScreen(calculationField);
     currentArithmeticOperationStr = '';
     calculationStringElementsArr = [];
