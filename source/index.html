@@ -13,10 +13,10 @@
 
 		</header>
 		<main>
-			<section class="calculator">
-				<div class="calculator__container">
+			<section class="calculator-main">
+				<div class="calculator calculator--realistic">
 					<div class="calculator__top">
-						<p class="calculator__name">Calculator</p>
+						<p class="calculator__name">Digital Calculator</p>
 						<div class="calculator__screen">
 							<input class="calculator__input calculator__input--calculation" value="0" type="text" name="calculation" id="screen_calculation" readonly>
 							<input class="calculator__input calculator__input--number" value="0" type="text" name="number" id="screen_number" readonly>
@@ -24,41 +24,42 @@
 					</div>
 					<div class="calculator__buttons buttons">
 						<div class="buttons__block buttons__block--service">
-							<button class="button" data-type="reset">C</button>
-							<button class="button" data-type="clear">CE</button>
-							<button class="button" data-type="delete">⬅</button>
+							<button class="button button--service" data-type="reset"><span>C</span></button>
+							<button class="button button--service" data-type="clear"><span>CE</span></button>
+							<button class="button button--service" data-type="delete"><span>⬅</span></button>
 						</div>
 						<div class="buttons__block buttons__block--numbers">
-							<button class="button" data-type="1">1</button>
-							<button class="button" data-type="2">2</button>
-							<button class="button" data-type="3">3</button>
-							<button class="button" data-type="4">4</button>
-							<button class="button" data-type="5">5</button>
-							<button class="button" data-type="6">6</button>
-							<button class="button" data-type="7">7</button>
-							<button class="button" data-type="8">8</button>
-							<button class="button" data-type="9">9</button>
-							<button class="button" data-type="0">0</button>
-							<button class="button" data-type="float">.</button>
-							<button class="button" data-type="result">=</button>
+							<button class="button button--default" data-type="1"><span>1</span></button>
+							<button class="button button--default" data-type="2"><span>2</span></button>
+							<button class="button button--default" data-type="3"><span>3</span></button>
+							<button class="button button--default" data-type="4"><span>4</span></button>
+							<button class="button button--default" data-type="5"><span>5</span></button>
+							<button class="button button--default" data-type="6"><span>6</span></button>
+							<button class="button button--default" data-type="7"><span>7</span></button>
+							<button class="button button--default" data-type="8"><span>8</span></button>
+							<button class="button button--default" data-type="9"><span>9</span></button>
+							<button class="button button--default" data-type="0"><span>0</span></button>
+							<button class="button button--darken" data-type="float"><span>.</span></button>
+							<button class="button button--darken" data-type="negative"><span>∓</span></button>
+							<button class="button button--result button--darken" data-type="result"><span>=</span></button>
             </div>
             <div class="buttons__block buttons__block--math">
               <div class="buttons__block buttons__block--signs">
-                <button class="button" data-type="segmentation">/</button>
-                <button class="button" data-type="multiplication">*</button>
-                <button class="button" data-type="summation">+</button>
-                <button class="button" data-type="subtraction">-</button>
+                <button class="button button--darken" data-type="segmentation"><span>/</span></button>
+                <button class="button button--darken" data-type="multiplication"><span>*</span></button>
+                <button class="button button--darken" data-type="summation"><span>+</span></button>
+                <button class="button button--darken" data-type="subtraction"><span>-</span></button>
               </div>
               <div class="buttons__block buttons__block--operations">
-                <button class="button" data-type="percent">%</button>
-                <button class="button" data-type="square">x<sup>2</sup></button>
-                <button class="button" data-type="root">√</button>
-                <button class="button" data-type="fraction"><sup>1</sup>/<sub>x</sub></button>
+                <button class="button button--darken" data-type="percent"><span>%</span></button>
+                <button class="button button--darken" data-type="square"><span>x<sup>2</sup></span></button>
+                <button class="button button--darken" data-type="root"><span>√</span></button>
+                <button class="button button--darken" data-type="fraction"><span><sup>1</sup>/<sub>x</sub></span></button>
               </div>
             </div>
 					</div>
 					<div class="calculator__bottom">
-						<p class="calculator__text">version 1.1</p>
+						<p class="calculator__text">Firmware. v1.2</p>
 					</div>
 				</div>
 			</section>
@@ -67,10 +68,6 @@
 	<footer>
 
 	</footer>
-	<script src="js/data.js"></script>
-	<script src="js/utils.js"></script>
-	<script src="js/math.js"></script>
-	<script src="js/calculation.js"></script>
 	<script src="js/main.js"></script>
 </body>
 </html>

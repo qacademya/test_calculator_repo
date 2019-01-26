@@ -7,6 +7,7 @@ var postcss = require('gulp-postcss');
 var autoprefixer = require('autoprefixer');
 var cssnano = require('cssnano');
 var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
 var pump = require('pump');
 
 var del = require('del');
@@ -15,11 +16,11 @@ var server = require('browser-sync').create();
 
 gulp.task('html', function () {
   return gulp.src('./source/*.html')
-		.pipe(gulp.dest('build'))
+		.pipe(gulp.dest('build'));
 });
 
 gulp.task('sass', function () {
-	return gulp.src('source/sass/style.scss')
+  return gulp.src('source/sass/style.scss')
 		.pipe(plumber())
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer(), cssnano()]))
@@ -30,15 +31,16 @@ gulp.task('sass', function () {
 
 gulp.task('js', function (cb) {
   pump([
-        gulp.src('source/js/*.js'),
-        gulp.dest('build/js'),
-        uglify(),
-        rename(function (path) {
-          path.basename += '.min';
-        }),
-        gulp.dest('build/js')
-    ],
-    cb
+    gulp.src(['source/js/data.js', 'source/js/utils.js', 'source/js/math.js', 'source/js/calculation.js', 'source/js/main.js'])
+    .pipe(concat('main.js')),
+    gulp.dest('build/js'),
+    uglify(),
+    rename(function (path) {
+      path.basename += '.min';
+    }),
+    gulp.dest('build/js')
+  ],
+  cb
   );
 });
 
@@ -71,8 +73,8 @@ gulp.task('server', function () {
   });
 
   gulp.watch('source/sass/**/*.{scss,sass}', gulp.series('sass'));
-	gulp.watch('source/*.html', gulp.series('html', 'refresh'));
-	gulp.watch('source/js/*.js', gulp.series('js'));
+  gulp.watch('source/*.html', gulp.series('html', 'refresh'));
+  gulp.watch('source/js/*.js', gulp.series('js'));
 });
 
 gulp.task('build', gulp.series('clean', 'copy', 'html', 'sass', 'js'));

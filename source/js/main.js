@@ -3,9 +3,7 @@
 (function () {
   var DEFAULT_CURRENT_NUMBER = '0';
   var DEFAULT_FONT_SIZE;
-  var SMALLER_FONT_SIZE;
-  var FONT_SIZE_STEP = 10;
-  var NUMBER_MAX_LENGTH = 15;
+  var NUMBER_MAX_LENGTH = 11;
 
   var calculator = window.data.calculator;
   var buttons = calculator.querySelector('.buttons');
@@ -225,7 +223,7 @@
   }
 
   function isCurrentNumberMoreMaxLength() {
-    return (numberField.value.length > NUMBER_MAX_LENGTH && !window.data.isNewStep) ? true : false;
+    return (numberField.value.length === NUMBER_MAX_LENGTH && !window.data.isNewStep) ? true : false;
   }
 
   function changeScreenFontSize(fontSize) {
@@ -234,10 +232,10 @@
 
   function controlScreenFontSize() {
     if (numberField.value.length > NUMBER_MAX_LENGTH + 1) {
-      changeScreenFontSize(SMALLER_FONT_SIZE);
+      changeScreenFontSize(getScreenSmallerFontSize());
       window.data.isBigNumber = true;
     }
-    if (window.data.isBigNumber && numberField.value.length <= NUMBER_MAX_LENGTH - 1) {
+    if (window.data.isBigNumber && numberField.value.length <= NUMBER_MAX_LENGTH) {
       changeScreenFontSize(DEFAULT_FONT_SIZE);
       window.data.isBigNumber = false;
     }
@@ -261,11 +259,10 @@
   }
 
   function getScreenSmallerFontSize() {
-    return (parseInt(DEFAULT_FONT_SIZE, 10) - FONT_SIZE_STEP) + 'px';
+    return (parseInt(DEFAULT_FONT_SIZE, 10) - numberField.value.length) + 'px';
   }
 
   DEFAULT_FONT_SIZE = getScreenDefaultFontSize();
-  SMALLER_FONT_SIZE = getScreenSmallerFontSize();
   window.utils.clearScreen(calculationField);
   buttons.addEventListener('click', onButtonClick);
 })();
