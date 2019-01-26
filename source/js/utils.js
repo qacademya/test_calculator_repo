@@ -12,11 +12,21 @@
     window.data.isResultReceived = false;
   }
 
+  function setNextCalculationStep() {
+    window.data.isFirstOperation = false;
+    window.data.isFloat = false;
+    window.data.isLastOperationArithmetic = true;
+    window.data.isLastOperationMath = false;
+    window.data.isLastOperationPercent = false;
+    window.data.isNewStep = true;
+    window.data.isResultReceived = false;
+  }
+
   function clearScreen(input) {
     input.value = '';
   }
 
-  function createString(arr, isWithSpace) {
+  function createStr(arr, isWithSpace) {
     return (isWithSpace) ? arr.join(' ') : arr.join('');
   }
 
@@ -26,8 +36,9 @@
 
   window.utils = {
     setBooleansDefault: setBooleansDefault,
+    setNextCalculationStep: setNextCalculationStep,
     clearScreen: clearScreen,
-    createString: createString,
+    createStr: createStr,
     getOperationResult: getOperationResult,
   };
 })();

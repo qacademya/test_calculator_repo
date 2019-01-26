@@ -39,7 +39,7 @@
     }
   }
 
-  window.mathOperations = {
+  window.math = {
     getMathOperationResult: getMathOperationResult,
   };
 })();
