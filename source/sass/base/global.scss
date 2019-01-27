@@ -9,12 +9,15 @@ body {
   line-height: 26px;
   font-weight: 400;
 	color: #323232;
-	
-	background-color: #646464;
+
+	background-color: #c1c1e9;
+  background: linear-gradient(to top, #c1c1e9 0%, #7c9ec0 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 a {
-  color: #ffffff;
+  color: rgb(133, 95, 7);
   text-decoration: none;
 }
 
@@ -39,10 +42,4 @@ input[type="radio"].visually-hidden {
   clip-path: inset(100%);
   clip: rect(0 0 0 0);
   overflow: hidden;
-}
-
-.wrap {
-	margin: 0 auto;
-	padding: 10px;
-	max-width: 820px;
 }

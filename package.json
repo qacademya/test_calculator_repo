@@ -8,7 +8,8 @@
     "url": "git+https://github.com/EdMSL/calculator.git"
   },
   "scripts": {
-    "start": "gulp start"
+    "start": "gulp start",
+    "img": "gulp images"
   },
   "author": "Eduard Trayt",
   "license": "ISC",
@@ -25,10 +26,13 @@
     "eslint": "^5.12.0",
     "eslint-config-htmlacademy": "^0.5.2",
     "gulp": "^4.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^5.0.3",
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^8.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^4.0.2",
+    "gulp-svgstore": "^7.0.1",
     "gulp-uglify": "^3.0.1",
     "node-sass": "^4.11.0",
     "normalize.css": "^8.0.1",
