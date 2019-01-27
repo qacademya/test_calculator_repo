@@ -87,14 +87,24 @@
 }
 
 .calculator--realistic .buttons__block {
+  & svg {
+    fill: $buttons_text_color;
+  }
+
   & .button {
+    display: flex;
+    justify-content: center;
     color: $buttons_text_color;
 
     border-radius: 5px;
 
     &:hover,
-    &:focus {
+    &:hover svg,
+    &:focus,
+    &:focus svg {
       color: lighten($buttons_text_color, 20);
+
+      fill: lighten($buttons_text_color, 20);
       outline: none;
     }
 
@@ -150,7 +160,8 @@
       width: calc(100% - 6px);
     }
 
-    & span {
+    & .button__icon,
+    & .button__number {
       position: relative;
       z-index: 1;
     }

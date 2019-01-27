@@ -24,37 +24,76 @@
 					</div>
 					<div class="calculator__buttons buttons">
 						<div class="buttons__block buttons__block--service">
-							<button class="button button--service" data-type="reset"><span>C</span></button>
-							<button class="button button--service" data-type="clear"><span>CE</span></button>
-							<button class="button button--service" data-type="delete"><span>⬅</span></button>
+							<button class="button button--service" data-type="reset">
+                <span class="visually-hidden">Сброс</span>
+                <span class="button__number">C</span>
+              </button>
+							<button class="button button--service" data-type="clear">
+                <span class="visually-hidden">Очистить число</span>
+                <span class="button__number">CE</span>
+              </button>
+							<button class="button button--service" data-type="delete">
+                <span class="visually-hidden">Удалить символ</span>
+                <svg class="button__icon" width="30" height="25"><use xlink:href="img/sprite.svg#cancel-icon"></use></svg>
+              </button>
 						</div>
 						<div class="buttons__block buttons__block--numbers">
-							<button class="button button--default" data-type="1"><span>1</span></button>
-							<button class="button button--default" data-type="2"><span>2</span></button>
-							<button class="button button--default" data-type="3"><span>3</span></button>
-							<button class="button button--default" data-type="4"><span>4</span></button>
-							<button class="button button--default" data-type="5"><span>5</span></button>
-							<button class="button button--default" data-type="6"><span>6</span></button>
-							<button class="button button--default" data-type="7"><span>7</span></button>
-							<button class="button button--default" data-type="8"><span>8</span></button>
-							<button class="button button--default" data-type="9"><span>9</span></button>
-							<button class="button button--default" data-type="0"><span>0</span></button>
-							<button class="button button--darken" data-type="float"><span>.</span></button>
-							<button class="button button--darken" data-type="negative"><span>∓</span></button>
-							<button class="button button--result button--darken" data-type="result"><span>=</span></button>
+							<button class="button button--default" data-type="1"><span class="button__number">1</span></button>
+							<button class="button button--default" data-type="2"><span class="button__number">2</span></button>
+							<button class="button button--default" data-type="3"><span class="button__number">3</span></button>
+							<button class="button button--default" data-type="4"><span class="button__number">4</span></button>
+							<button class="button button--default" data-type="5"><span class="button__number">5</span></button>
+							<button class="button button--default" data-type="6"><span class="button__number">6</span></button>
+							<button class="button button--default" data-type="7"><span class="button__number">7</span></button>
+							<button class="button button--default" data-type="8"><span class="button__number">8</span></button>
+							<button class="button button--default" data-type="9"><span class="button__number">9</span></button>
+							<button class="button button--default" data-type="0"><span class="button__number">0</span></button>
+							<button class="button button--darken" data-type="float"><span class="button__number">.</span></button>
+							<button class="button button--darken" data-type="negative">
+                <span class="visually-hidden">Отрицательное число</span>
+                <svg class="button__icon" width="30" height="25"><use xlink:href="img/sprite.svg#plus-and-minus-icon"></use></svg>
+              </button>
+							<button class="button button--result button--darken" data-type="result">
+                <span class="visually-hidden">Получить результат</span>
+                <svg class="button__icon" width="30" height="25"><use xlink:href="img/sprite.svg#result-icon"></use></svg>
+              </button>
             </div>
             <div class="buttons__block buttons__block--math">
               <div class="buttons__block buttons__block--signs">
-                <button class="button button--darken" data-type="segmentation"><span>/</span></button>
-                <button class="button button--darken" data-type="multiplication"><span>*</span></button>
-                <button class="button button--darken" data-type="summation"><span>+</span></button>
-                <button class="button button--darken" data-type="subtraction"><span>-</span></button>
+                <button class="button button--darken" data-type="segmentation">
+                  <span class="visually-hidden">Деление</span>
+                  <svg class="button__icon" width="30" height="23"><use xlink:href="img/sprite.svg#divide-icon"></use></svg>
+                </button>
+                <button class="button button--darken" data-type="multiplication">
+                  <span class="visually-hidden">Умножение</span>
+                  <svg class="button__icon" width="30" height="23"><use xlink:href="img/sprite.svg#multiply-icon"></use></svg>
+                </button>
+                <button class="button button--darken" data-type="summation">
+                  <span class="visually-hidden">Сложение</span>
+                  <svg class="button__icon" width="30" height="23"><use xlink:href="img/sprite.svg#plus-icon"></use></svg>
+                </button>
+                <button class="button button--darken" data-type="subtraction">
+                  <span class="visually-hidden">Вычитание</span>
+                  <svg class="button__icon" width="30" height="23"><use xlink:href="img/sprite.svg#minus-icon"></use></svg>
+                </button>
               </div>
               <div class="buttons__block buttons__block--operations">
-                <button class="button button--darken" data-type="percent"><span>%</span></button>
-                <button class="button button--darken" data-type="square"><span>x<sup>2</sup></span></button>
-                <button class="button button--darken" data-type="root"><span>√</span></button>
-                <button class="button button--darken" data-type="fraction"><span><sup>1</sup>/<sub>x</sub></span></button>
+                <button class="button button--darken" data-type="percent">
+                  <span class="visually-hidden">Процент</span>
+                  <svg class="button__icon" width="30" height="23"><use xlink:href="img/sprite.svg#percent-icon"></use></svg>
+                </button>
+                <button class="button button--darken" data-type="square">
+                  <span class="visually-hidden">Квадрат числа</span>
+                  <svg class="button__icon" width="30" height="23"><use xlink:href="img/sprite.svg#square-icon"></use></svg>
+                </button>
+                <button class="button button--darken" data-type="root">
+                  <span class="visually-hidden">Квадратный корень</span>
+                  <svg class="button__icon" width="30" height="23"><use xlink:href="img/sprite.svg#root-icon"></use></svg>
+                </button>
+                <button class="button button--darken" data-type="fraction">
+                  <span class="visually-hidden">Вычислить часть из единицы</span>
+                  <svg class="button__icon" width="30" height="30"><use xlink:href="img/sprite.svg#hyperbola-icon"></use></svg>
+                </button>
               </div>
             </div>
 					</div>
@@ -66,7 +105,8 @@
 		</main>
 	</div>
 	<footer>
-
+    <div>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" 		    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 		    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+    <div>Icons made by <a href="https://www.flaticon.com/authors/stephen-hutchings" title="Stephen Hutchings">Stephen Hutchings</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" 			    title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 	</footer>
 	<script src="js/main.js"></script>
 </body>

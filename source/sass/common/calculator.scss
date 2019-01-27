@@ -83,6 +83,8 @@
   }
 
   & .calculator__text {
+    margin: 0;
+    padding: 10px 0 20px;
     font-size: 15px;
     color: invert($calculator_color_realistic);
   }
