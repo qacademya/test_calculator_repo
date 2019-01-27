@@ -15,6 +15,7 @@
     isLastOperationArithmetic: false,
     isLastOperationPercent: false,
     isLastOperationMath: false,
+    isNegative: false,
     isNewStep: true,
     isResultReceived: false,
     FLOAT_PRECISION: 11,

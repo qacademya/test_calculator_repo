@@ -31,6 +31,7 @@
     clear: clearCurrentNumber,
     delete: deleteCurrentNumberSimbol,
     float: setFloatingPointNumber,
+    negative: setNegativeNumber,
     result: getCalculationResult,
   };
 
@@ -107,18 +108,20 @@
     window.calculation.replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
     window.data.currentResult = DEFAULT_CURRENT_NUMBER;
     window.data.isFloat = false;
+    window.data.isNegative = false;
     window.data.isNewStep = true;
   }
 
-  function startNewOperationAfterTotalDeletion(modifiedNumber) {
-    modifiedNumber = DEFAULT_CURRENT_NUMBER;
-    window.calculation.replaceCurrentNumber(modifiedNumber);
+  function startNewOperationAfterTotalDeletion() {
+    window.calculation.replaceCurrentNumber(DEFAULT_CURRENT_NUMBER);
+    window.data.isNegative = false;
     window.data.isNewStep = true;
   }
 
   function deleteCurrentNumberSimbol() {
     var modifiedByDeletionNumber;
     var currentNumberLastSimbol = window.data.currentNumber[window.data.currentNumber.length - 1];
+    var currentNumberFirstSimbol = window.data.currentNumber[0];
 
     if (!window.data.isNewStep) {
       if (window.data.currentNumber.length > 1) {
@@ -129,12 +132,27 @@
         modifiedByDeletionNumber = window.data.currentNumber.slice(0, -1);
         window.calculation.replaceCurrentNumber(modifiedByDeletionNumber);
 
-        if (window.data.currentNumber === DEFAULT_CURRENT_NUMBER) {
-          startNewOperationAfterTotalDeletion(modifiedByDeletionNumber);
+        if (window.data.currentNumber === DEFAULT_CURRENT_NUMBER || (window.data.currentNumber.length === 1 && currentNumberFirstSimbol === '-')) {
+          startNewOperationAfterTotalDeletion();
         }
       } else {
-        startNewOperationAfterTotalDeletion(modifiedByDeletionNumber);
+        startNewOperationAfterTotalDeletion();
       }
+    } else {
+      return;
+    }
+  }
+
+  function setNegativeNumber() {
+    if (!window.data.isNewStep) {
+      if (!window.data.isNegative) {
+        window.data.currentNumber = '-' + window.data.currentNumber;
+        window.data.isNegative = true;
+      } else {
+        window.data.currentNumber = window.utils.deleteNegativeSign();
+        window.data.isNegative = false;
+      }
+      window.calculation.replaceCurrentNumber(window.data.currentNumber);
     } else {
       return;
     }
