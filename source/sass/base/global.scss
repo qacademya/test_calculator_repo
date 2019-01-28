@@ -11,7 +11,8 @@ body {
 	color: #323232;
 
 	background-color: #c1c1e9;
-  background: linear-gradient(to top, #c1c1e9 0%, #7c9ec0 100%);
+  background-image: linear-gradient(to top, #c1c1e9 0%, #7c9ec0 100%);
+  background-position: top center;
   background-repeat: no-repeat;
   background-size: cover;
 }

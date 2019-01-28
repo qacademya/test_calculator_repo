@@ -36,8 +36,12 @@
     return Number(eval(operationStr).toFixed(window.data.FLOAT_PRECISION));
   }
 
-  function deleteNegativeSign() {
-    return window.data.currentNumber.slice(1);
+  function toggleNegativeSign(number) {
+    return getOperationResult(0 - Number(number));
+  }
+
+  function deleteNegativeSign(number) {
+    return number.slice(1);
   }
 
   window.utils = {
@@ -46,6 +50,7 @@
     clearScreen: clearScreen,
     createStr: createStr,
     getOperationResult: getOperationResult,
+    toggleNegativeSign: toggleNegativeSign,
     deleteNegativeSign: deleteNegativeSign,
   };
 })();

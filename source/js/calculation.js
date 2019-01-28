@@ -6,6 +6,7 @@ var numberField = calculator.querySelector('#screen_number');
 
 var specialStr = '';
 var lastArithmeticOperationStr = '';
+var oldLastElementValue;
 
 (function () {
   function changeCurrentNumber(newValue) {
@@ -53,6 +54,28 @@ var lastArithmeticOperationStr = '';
     }
     addElementForCalculationStr(specialStr);
     displayNewCalculationStr();
+  }
+
+  function changeCalculationStrByNegative() {
+    var arrLastElementIndex;
+    if (!window.data.isNegative) {
+      if (window.data.isLastOperationMath || window.data.isResultReceived) {
+        if (window.data.isResultReceived) {
+          arrLastElementIndex = 0;
+          window.data.calculationStrElementsArr[arrLastElementIndex] = window.data.currentNumber;
+        } else {
+          arrLastElementIndex = window.data.calculationStrElementsArr.length - 1;
+        }
+        oldLastElementValue = window.data.calculationStrElementsArr[arrLastElementIndex];
+        window.data.calculationStrElementsArr[arrLastElementIndex] = 'negate(' + window.data.calculationStrElementsArr[arrLastElementIndex] + ')';
+        displayNewCalculationStr();
+      } else {
+        return;
+      }
+    } else {
+      window.data.calculationStrElementsArr[arrLastElementIndex] = oldLastElementValue;
+      displayNewCalculationStr();
+    }
   }
 
   function changeNextArithmeticOperation(lastArithmeticSign) {
@@ -110,6 +133,7 @@ var lastArithmeticOperationStr = '';
     changeCalculationStrByArithmetic: changeCalculationStrByArithmetic,
     changeNextArithmeticOperation: changeNextArithmeticOperation,
     changeCalculationStrByMath: changeCalculationStrByMath,
+    changeCalculationStrByNegative: changeCalculationStrByNegative,
     repeatLastArithmeticOperation: repeatLastArithmeticOperation,
     getCurrentArithmeticOperationResult: getCurrentArithmeticOperationResult,
   };

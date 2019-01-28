@@ -144,15 +144,13 @@
   }
 
   function setNegativeNumber() {
-    if (!window.data.isNewStep) {
-      if (!window.data.isNegative) {
-        window.data.currentNumber = '-' + window.data.currentNumber;
-        window.data.isNegative = true;
-      } else {
-        window.data.currentNumber = window.utils.deleteNegativeSign();
-        window.data.isNegative = false;
-      }
-      window.calculation.replaceCurrentNumber(window.data.currentNumber);
+    var negativeNumber;
+    if (Number(window.data.currentNumber) !== 0 && (!window.data.isNewStep || window.data.isLastOperationMath || window.data.isResultReceived)) {
+      negativeNumber = window.utils.toggleNegativeSign(window.data.currentNumber);
+      window.calculation.replaceCurrentNumber(negativeNumber);
+      window.data.currentResult = window.data.currentNumber;
+      window.calculation.changeCalculationStrByNegative();
+      window.data.isNegative = (window.data.isNegative) ? false : true;
     } else {
       return;
     }
