@@ -47,6 +47,10 @@
     var MATH_SIGN = MathSigns[mathOpertaion.toUpperCase()];
     var operationNumber;
 
+    if (mathOpertaion === 'percent' && window.data.isResultReceived) {
+      return;
+    }
+
     if (window.data.isLastOperationArithmetic) {
       operationNumber = window.data.currentResult;
     } else {
