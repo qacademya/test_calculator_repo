@@ -33,7 +33,7 @@ var oldLastElementValue;
   }
 
   function changeCalculationStrByArithmetic(sign, number) {
-    if (window.data.isLastOperationMath || window.data.isNegative) {
+    if (window.data.isLastOperationMath || window.data.isNegativeStr) {
       addElementForCalculationStr(window.data.ArithmeticSigns[sign]);
     } else {
       addElementForCalculationStr(Number(number));
@@ -87,6 +87,7 @@ var oldLastElementValue;
   function toggleNegateStrOnCalculationStr(arrIndex, newValue) {
     window.data.calculationStrElementsArr[arrIndex] = newValue;
     displayNewCalculationStr();
+    window.data.isNegativeStr = (window.data.isNegativeStr) ? false : true;
   }
 
   function changeNextArithmeticOperation(lastArithmeticSign) {

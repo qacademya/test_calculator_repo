@@ -109,6 +109,7 @@
     window.data.currentResult = DEFAULT_CURRENT_NUMBER;
     window.data.isFloat = false;
     window.data.isNegative = false;
+    window.data.isNegativeStr = false;
     window.data.isNewStep = true;
   }
 

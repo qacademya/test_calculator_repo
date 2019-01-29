@@ -9,6 +9,7 @@
     window.data.isLastOperationMath = false;
     window.data.isLastOperationPercent = false;
     window.data.isNegative = false;
+    window.data.isNegativeStr = false;
     window.data.isNewStep = true;
     window.data.isResultReceived = false;
   }
@@ -20,6 +21,7 @@
     window.data.isLastOperationMath = false;
     window.data.isLastOperationPercent = false;
     window.data.isNegative = false;
+    window.data.isNegativeStr = false;
     window.data.isNewStep = true;
     window.data.isResultReceived = false;
   }
