@@ -58,14 +58,15 @@ var oldLastElementValue;
 
   function changeCalculationStrByNegative() {
     var arrLastElementIndex;
+    if (window.data.isResultReceived) {
+      arrLastElementIndex = 0;
+      window.data.calculationStrElementsArr[arrLastElementIndex] = window.data.currentNumber;
+    } else {
+      arrLastElementIndex = window.data.calculationStrElementsArr.length - 1;
+    }
+
     if (!window.data.isNegative) {
       if (window.data.isLastOperationMath || window.data.isResultReceived) {
-        if (window.data.isResultReceived) {
-          arrLastElementIndex = 0;
-          window.data.calculationStrElementsArr[arrLastElementIndex] = window.data.currentNumber;
-        } else {
-          arrLastElementIndex = window.data.calculationStrElementsArr.length - 1;
-        }
         oldLastElementValue = window.data.calculationStrElementsArr[arrLastElementIndex];
         window.data.calculationStrElementsArr[arrLastElementIndex] = 'negate(' + window.data.calculationStrElementsArr[arrLastElementIndex] + ')';
         displayNewCalculationStr();
