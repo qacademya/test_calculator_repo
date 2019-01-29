@@ -40,10 +40,6 @@
     return getOperationResult(0 - Number(number));
   }
 
-  function deleteNegativeSign(number) {
-    return number.slice(1);
-  }
-
   window.utils = {
     setBooleansDefault: setBooleansDefault,
     setNextCalculationStep: setNextCalculationStep,
@@ -51,6 +47,5 @@
     createStr: createStr,
     getOperationResult: getOperationResult,
     toggleNegativeSign: toggleNegativeSign,
-    deleteNegativeSign: deleteNegativeSign,
   };
 })();

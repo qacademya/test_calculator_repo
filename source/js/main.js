@@ -149,8 +149,8 @@
       negativeNumber = window.utils.toggleNegativeSign(window.data.currentNumber);
       window.calculation.replaceCurrentNumber(negativeNumber);
       window.data.currentResult = window.data.currentNumber;
-      window.calculation.changeCalculationStrByNegative();
       window.data.isNegative = (window.data.isNegative) ? false : true;
+      window.calculation.changeCalculationStrByNegative();
     } else {
       return;
     }
@@ -197,8 +197,9 @@
   }
 
   function performNumberOperation(pressedButtonValue) {
-    if (window.data.isLastOperationMath || window.data.isLastOperationPercent) {
+    if (window.data.isLastOperationMath || window.data.isLastOperationPercent || window.data.isNegative) {
       window.calculation.clearSpecialStrFromCalculation();
+      window.data.isNegative = false;
     }
 
     window.data.isLastOperationArithmetic = false;
