@@ -9,6 +9,7 @@
     window.data.isLastOperationMath = false;
     window.data.isLastOperationPercent = false;
     window.data.isNegative = false;
+    window.data.isNegativeStr = false;
     window.data.isNewStep = true;
     window.data.isResultReceived = false;
   }
@@ -20,6 +21,7 @@
     window.data.isLastOperationMath = false;
     window.data.isLastOperationPercent = false;
     window.data.isNegative = false;
+    window.data.isNegativeStr = false;
     window.data.isNewStep = true;
     window.data.isResultReceived = false;
   }
@@ -36,8 +38,8 @@
     return Number(eval(operationStr).toFixed(window.data.FLOAT_PRECISION));
   }
 
-  function deleteNegativeSign() {
-    return window.data.currentNumber.slice(1);
+  function toggleNegativeSign(number) {
+    return getOperationResult(0 - Number(number));
   }
 
   window.utils = {
@@ -46,6 +48,6 @@
     clearScreen: clearScreen,
     createStr: createStr,
     getOperationResult: getOperationResult,
-    deleteNegativeSign: deleteNegativeSign,
+    toggleNegativeSign: toggleNegativeSign,
   };
 })();

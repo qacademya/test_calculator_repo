@@ -47,6 +47,10 @@
     var MATH_SIGN = MathSigns[mathOpertaion.toUpperCase()];
     var operationNumber;
 
+    if (mathOpertaion === 'percent' && window.data.isResultReceived) {
+      return;
+    }
+
     if (window.data.isLastOperationArithmetic) {
       operationNumber = window.data.currentResult;
     } else {
@@ -109,6 +113,7 @@
     window.data.currentResult = DEFAULT_CURRENT_NUMBER;
     window.data.isFloat = false;
     window.data.isNegative = false;
+    window.data.isNegativeStr = false;
     window.data.isNewStep = true;
   }
 
@@ -144,15 +149,13 @@
   }
 
   function setNegativeNumber() {
-    if (!window.data.isNewStep) {
-      if (!window.data.isNegative) {
-        window.data.currentNumber = '-' + window.data.currentNumber;
-        window.data.isNegative = true;
-      } else {
-        window.data.currentNumber = window.utils.deleteNegativeSign();
-        window.data.isNegative = false;
-      }
-      window.calculation.replaceCurrentNumber(window.data.currentNumber);
+    var negativeNumber;
+    if (Number(window.data.currentNumber) !== 0 && (!window.data.isNewStep || window.data.isLastOperationMath || window.data.isResultReceived)) {
+      negativeNumber = window.utils.toggleNegativeSign(window.data.currentNumber);
+      window.calculation.replaceCurrentNumber(negativeNumber);
+      window.data.currentResult = window.data.currentNumber;
+      window.data.isNegative = (window.data.isNegative) ? false : true;
+      window.calculation.changeCalculationStrByNegative();
     } else {
       return;
     }
@@ -199,8 +202,9 @@
   }
 
   function performNumberOperation(pressedButtonValue) {
-    if (window.data.isLastOperationMath || window.data.isLastOperationPercent) {
+    if (window.data.isLastOperationMath || window.data.isLastOperationPercent || window.data.isNegative) {
       window.calculation.clearSpecialStrFromCalculation();
+      window.data.isNegative = false;
     }
 
     window.data.isLastOperationArithmetic = false;

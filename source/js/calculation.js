@@ -6,6 +6,7 @@ var numberField = calculator.querySelector('#screen_number');
 
 var specialStr = '';
 var lastArithmeticOperationStr = '';
+var oldLastElementValue;
 
 (function () {
   function changeCurrentNumber(newValue) {
@@ -32,7 +33,7 @@ var lastArithmeticOperationStr = '';
   }
 
   function changeCalculationStrByArithmetic(sign, number) {
-    if (window.data.isLastOperationMath) {
+    if (window.data.isLastOperationMath || window.data.isNegativeStr) {
       addElementForCalculationStr(window.data.ArithmeticSigns[sign]);
     } else {
       addElementForCalculationStr(Number(number));
@@ -53,6 +54,40 @@ var lastArithmeticOperationStr = '';
     }
     addElementForCalculationStr(specialStr);
     displayNewCalculationStr();
+  }
+
+  function changeCalculationStrByNegative() {
+    var arrLastElementIndex;
+    if (window.data.isResultReceived) {
+      arrLastElementIndex = 0;
+      window.data.calculationStrElementsArr[arrLastElementIndex] = window.utils.toggleNegativeSign(window.data.currentNumber);
+    } else {
+      arrLastElementIndex = window.data.calculationStrElementsArr.length - 1;
+    }
+
+    if (window.data.isNegative) {
+      if (window.data.isLastOperationMath || window.data.isResultReceived) {
+        oldLastElementValue = (window.data.isResultReceived) ? '' : window.data.calculationStrElementsArr[arrLastElementIndex];
+
+        specialStr = 'negate(' + window.data.calculationStrElementsArr[arrLastElementIndex] + ')';
+
+        toggleNegateStrOnCalculationStr(arrLastElementIndex, specialStr);
+      } else {
+        return;
+      }
+    } else {
+      if (window.data.isLastOperationMath || window.data.isResultReceived) {
+        toggleNegateStrOnCalculationStr(arrLastElementIndex, oldLastElementValue);
+      } else {
+        return;
+      }
+    }
+  }
+
+  function toggleNegateStrOnCalculationStr(arrIndex, newValue) {
+    window.data.calculationStrElementsArr[arrIndex] = newValue;
+    displayNewCalculationStr();
+    window.data.isNegativeStr = (window.data.isNegativeStr) ? false : true;
   }
 
   function changeNextArithmeticOperation(lastArithmeticSign) {
@@ -83,6 +118,10 @@ var lastArithmeticOperationStr = '';
   }
 
   function repeatLastArithmeticOperation() {
+    if (window.data.isNegative) {
+      clearSpecialStrFromCalculation();
+      window.data.isNegative = false;
+    }
     window.calculation.getArithmeticOperationResult(getOperationStrForRepeating());
     window.data.isFloat = false;
     window.data.isNewStep = true;
@@ -110,6 +149,7 @@ var lastArithmeticOperationStr = '';
     changeCalculationStrByArithmetic: changeCalculationStrByArithmetic,
     changeNextArithmeticOperation: changeNextArithmeticOperation,
     changeCalculationStrByMath: changeCalculationStrByMath,
+    changeCalculationStrByNegative: changeCalculationStrByNegative,
     repeatLastArithmeticOperation: repeatLastArithmeticOperation,
     getCurrentArithmeticOperationResult: getCurrentArithmeticOperationResult,
   };
