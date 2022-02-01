@@ -3,7 +3,7 @@
 
 Первый самостоятельный тренировочный проект по созданию калькулятора с помощью HTML, CSS и JS.
 
-[Посмотреть в готовом виде](https://edmsl-compilation.000webhostapp.com/calculator/index.html)
+[Посмотреть в готовом виде](https://edmsl.github.io/calculator/)
 
 История версий:
 
